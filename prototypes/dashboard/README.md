@@ -7,10 +7,10 @@ Dies ist **ausschließlich eine statische, interaktive UX-Vorschau**. Sie verwen
 Im Root des ausgecheckten Repositories:
 
 ```bash
-python3 -m http.server 4173
+python3 -m http.server 4173 --bind 127.0.0.1
 ```
 
-Anschließend `http://localhost:4173/prototypes/dashboard/` öffnen. Alternativ einen beliebigen lokalen HTTP-Server verwenden, der das **Repository-Root** ausliefert. Direkter `file://`-Zugriff kann ES-Module blockieren.
+Anschließend `http://127.0.0.1:4173/prototypes/dashboard/` öffnen. Unter Windows kann die Alternative `py -m http.server 4173 --bind 127.0.0.1` verwendet werden. Die Bindung an `127.0.0.1` verhindert, dass die Vorschau versehentlich im lokalen Netzwerk erreichbar ist. Alternativ einen beliebigen lokalen HTTP-Server verwenden, der das **Repository-Root** ausliefert. Direkter `file://`-Zugriff kann ES-Module blockieren.
 
 ## Bereits interaktiv
 

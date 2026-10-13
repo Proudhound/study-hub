@@ -80,7 +80,7 @@ function navigate(route) {
   }
   closeSidebar();
   $("#main-content").focus({ preventScroll: true });
-  window.scrollTo({ top: 0, behavior: "instant" });
+  window.scrollTo({ top: 0, behavior: "auto" });
 }
 $$("#sidebar [data-route]").forEach(button => button.addEventListener("click", () => navigate(button.dataset.route)));
 $("#back-to-dashboard").addEventListener("click", () => navigate("dashboard"));

@@ -91,7 +91,7 @@ Das Repository verwendet **eine eigene, generische Prozessbeschreibung**. Es ben
 Die erste interaktive, **vollständig synthetische** [Dashboard-Vorschau](prototypes/dashboard/README.md) kann lokal ohne zusätzliche Pakete ausprobiert werden:
 
 ```bash
-python3 -m http.server 4173
+python3 -m http.server 4173 --bind 127.0.0.1
 ```
 
 Dann [http://localhost:4173/prototypes/dashboard/](http://localhost:4173/prototypes/dashboard/) öffnen. Enthalten sind die responsive Bereichsnavigation, Light/Dark/System, ein anpassbares Kachelraster, 0-basierte Credits-Anzeige, Demo-Modultabs und Aufgaben. **Die Vorschau ist bewusst kein produktives React-Frontend und speichert keine Studienakten.** Umsetzung in React + API/DB folgt separat nach Designabnahme.
