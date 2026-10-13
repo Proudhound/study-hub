@@ -2,7 +2,10 @@ import {
   MODULES, LAYOUT_STORAGE_KEY, THEME_STORAGE_KEY,
   normalizeLayout, setModuleVisible, moveModule, parseTheme, resolveTheme, progressSegments
 } from "./state.js";
-import { demo } from "./demo-data.js";
+import { demo as exampleData } from "./demo-data.js";
+import { parseLocalCatalog } from "./catalog.js";
+let demo = exampleData;
+let localCatalogLoaded = false;
 
 const $ = selector => document.querySelector(selector);
 const $$ = selector => [...document.querySelectorAll(selector)];
@@ -99,10 +102,11 @@ function widgetFromTemplate(id) {
   return article;
 }
 function addProgress(article) {
-  const progress = progressSegments(demo.earnedCredits, demo.totalCredits, 40);
+  const knownProgress = Number.isFinite(demo.earnedCredits) && demo.earnedCredits >= 0;
+  const progress = progressSegments(knownProgress ? demo.earnedCredits : 0, demo.totalCredits, 40);
   const digits = article.querySelector("#credit-primary");
   digits.textContent = "";
-  digits.append(document.createTextNode(String(progress.earned) + " "));
+  digits.append(document.createTextNode((knownProgress ? String(progress.earned) : "—") + " "));
   const sub = document.createElement("span");
   sub.textContent = "/ " + progress.target;
   digits.append(sub);
@@ -110,33 +114,39 @@ function addProgress(article) {
   bar.replaceChildren();
   bar.setAttribute("aria-valuemin", "0");
   bar.setAttribute("aria-valuemax", String(progress.target));
-  bar.setAttribute("aria-valuenow", String(progress.earned));
+  if (knownProgress) {
+    bar.setAttribute("aria-valuenow", String(progress.earned));
+    bar.removeAttribute("aria-valuetext");
+  } else {
+    bar.removeAttribute("aria-valuenow");
+    bar.setAttribute("aria-valuetext", "Leistungsstand noch nicht erfasst");
+  }
   for (let i = 0; i < progress.count; i++) {
     const segment = document.createElement("span");
     segment.className = "segment" + (i < progress.filled ? " filled" : "");
     segment.setAttribute("aria-hidden", "true");
     bar.append(segment);
   }
-  article.querySelector("#credit-percent").textContent = progress.percent.toLocaleString("de-DE") + " % abgeschlossen";
+  article.querySelector("#credit-percent").textContent = knownProgress ? progress.percent.toLocaleString("de-DE") + " % abgeschlossen" : "Leistungsstand nicht erfasst";
   const labels = article.querySelectorAll(".progress-scale > span");
   labels[0].textContent = "0 Credits";
   labels[1].textContent = progress.target + " Credits";
   const info = article.querySelectorAll(".credit-note");
-  info[0].lastChild.textContent = " " + progress.earned + " erworben";
-  info[1].lastChild.textContent = " " + (progress.target - progress.earned) + " offen";
+  info[0].lastChild.textContent = knownProgress ? " " + progress.earned + " erworben" : " Noch kein Leistungsstand";
+  info[1].lastChild.textContent = knownProgress ? " " + (progress.target - progress.earned) + " offen" : " " + progress.target + " Credits im Studienplan";
 }
 function renderModuleRows(article, tab) {
   const table = article.querySelector("#module-table-body");
   table.replaceChildren();
-  const models = tab === "elective" ? demo.modules.filter(x => x.kind === "Wahloption")
-    : tab === "roadmap" ? demo.modules.filter(x => x.status !== "Abgeschlossen") : demo.modules;
+  const models = tab === "elective" ? demo.modules.filter(x => x.kind === "Wahloption" || x.kind === "Wahlpflichtplatz")
+    : tab === "roadmap" ? demo.modules.filter(x => x.semester ? x.semester <= 2 : x.status !== "Abgeschlossen") : demo.modules;
   for (const row of models) {
     const tr = document.createElement("tr");
     const moduleCell = document.createElement("td");
     const name = document.createElement("strong");
     name.textContent = row.title;
     const code = document.createElement("small");
-    code.textContent = row.code;
+    code.textContent = row.code + (row.semester ? " · " + row.semester + ". Semester" : "");
     moduleCell.append(name, code);
     const type = document.createElement("td");
     const typeTag = document.createElement("span");
@@ -167,6 +177,45 @@ function setupTabs(article) {
     });
   });
 }
+function renderRoadmap(article) {
+  if (!Array.isArray(demo.roadmap) || demo.roadmap.length === 0) return;
+  const root = article.querySelector(".milestone-list");
+  root.replaceChildren();
+  for (const [i, milestone] of demo.roadmap.slice(0, 3).entries()) {
+    const li = document.createElement("li");
+    li.className = "milestone";
+    const badge = document.createElement("span");
+    badge.className = "milestone-indicator";
+    badge.textContent = String(i + 1);
+    const details = document.createElement("div");
+    const heading = document.createElement("strong");
+    heading.textContent = milestone.title;
+    const caption = document.createElement("small");
+    caption.textContent = milestone.subtitle;
+    details.append(heading, caption);
+    li.append(badge, details);
+    root.append(li);
+  }
+  article.querySelector(".widget-caption").textContent = "Meilensteine aus dem Studienverlaufsplan";
+}
+function updateOverview() {
+  const info = document.querySelectorAll(".overview-cell strong");
+  if (info.length !== 3) return;
+  info[0].textContent = demo.program;
+  info[1].textContent = Number.isFinite(demo.earnedCredits)
+    ? demo.earnedCredits + " von " + demo.totalCredits + " Credits"
+    : demo.totalCredits + " ECTS · Leistungsstand offen";
+  info[2].textContent = demo.tasks.length + (localCatalogLoaded ? " Planungsvorschläge" : " Lernaufgaben");
+  if (!localCatalogLoaded) return;
+  document.querySelector(".workspace-info strong").textContent = demo.program;
+  document.querySelector(".workspace-info span").textContent = demo.degree;
+  document.querySelector(".demo-pill").textContent = "LOKALER KATALOG";
+  document.querySelector(".overview-cell:nth-child(2) small").textContent = "STUDIENPLAN · KEIN LEISTUNGSNACHWEIS";
+  document.querySelector(".overview-cell:nth-child(3) small").textContent = "PLANUNGSVORSCHLÄGE";
+  document.querySelector(".page-subtitle").textContent = demo.degree + " · " + demo.modules.length + " Planpositionen · " + demo.totalCredits + " ECTS (Pflicht- und Wahlbereiche)";
+  document.querySelector(".preview-disclaimer").textContent = "ⓘ Lokaler, nicht veröffentlichter Studienkatalog. Credits und Semester stammen aus dem bereitgestellten Studienverlaufsplan; Leistungsstand, Anerkennungen und Vertiefungswahl sind nicht hinterlegt. Keine API oder Cloud.";
+}
+
 function renderTasks(article) {
   const parent = article.querySelector("#tasks-list");
   parent.replaceChildren();
@@ -197,6 +246,7 @@ function renderWidgets() {
     const article = widgetFromTemplate(id);
     if (!article) continue;
     if (id === "credits") addProgress(article);
+    if (id === "roadmap") renderRoadmap(article);
     if (id === "module-cockpit") setupTabs(article);
     if (id === "tasks") renderTasks(article);
     grid.append(article);
@@ -265,4 +315,21 @@ $("#close-customize").addEventListener("click", () => dialog.close());
 $("#done-customize").addEventListener("click", () => dialog.close());
 $("#reset-customize").addEventListener("click", () => changeLayout(() => normalizeLayout(null)));
 dialog.addEventListener("click", event => { if (event.target === dialog) dialog.close(); });
-renderWidgets();
+async function initializeCatalog() {
+  if (new URLSearchParams(window.location.search).get("catalog") === "local") {
+    try {
+      const response = await fetch("./local-study-data.json", {cache:"no-store",credentials:"omit",redirect:"error"});
+      if (!response.ok) throw new Error("Local catalog not found");
+      const raw = await response.text();
+      if (raw.length > 256000) throw new RangeError("Catalog too large");
+      demo = parseLocalCatalog(JSON.parse(raw));
+      localCatalogLoaded = true;
+    } catch (_) {
+      document.querySelector(".preview-disclaimer").textContent =
+        "ⓘ Lokaler Katalog konnte nicht geladen werden. Es wird weiterhin die synthetische Demo angezeigt. Prüfe den Dateinamen local-study-data.json und öffne die Browser-Konsole für die Netzwerkantwort.";
+    }
+  }
+  updateOverview();
+  renderWidgets();
+}
+initializeCatalog();

@@ -6,6 +6,7 @@ import {
   parseTheme, resolveTheme, progressSegments, LAYOUT_STORAGE_KEY
 } from "../prototypes/dashboard/state.js";
 import { demo } from "../prototypes/dashboard/demo-data.js";
+import { parseLocalCatalog } from "../prototypes/dashboard/catalog.js";
 
 test("prototype and TypeScript product contract share exact widget IDs", () => {
   const source = readFileSync(new URL("../packages/dashboard/src/modules.ts", import.meta.url), "utf8");
@@ -63,4 +64,34 @@ test("preview is a static, self-hostable module app with required navigation and
   assert.match(js, /showModal\(\)/);
   assert.match(css, /@import url\("\.\.\/\.\.\/packages\/ui\/src\/tokens\.css"\)/);
   assert.doesNotMatch(html,/https?:\/\//i);
+});
+
+test("private catalog parser accepts a synthetic whole-program plan and unknown progress", () => {
+  const valid = {
+    schemaVersion:1, program:"Example degree",degree:"Bachelor",totalCredits:15,
+    earnedCredits:null,
+    modules:[
+      {code:"DEMO-101",title:"Module A",credits:5,semester:1,kind:"Required",status:"Planned"},
+      {code:"DEMO-ELECT",title:"Elective slot",credits:10,semester:2,kind:"Elective",status:"Unselected"}
+    ],
+    roadmap:[{title:"Phase 1",subtitle:"5 credits"}],
+    tasks:[{title:"Review plan",time:"Suggestion",kind:"Demo"}]
+  };
+  assert.equal(parseLocalCatalog(valid).earnedCredits,null);
+  assert.equal(parseLocalCatalog(valid).modules.length,2);
+  assert.equal(parseLocalCatalog({...valid,earnedCredits:5}).earnedCredits,5);
+  assert.throws(()=>parseLocalCatalog({...valid,totalCredits:180}),/credits do not match/);
+  assert.throws(()=>parseLocalCatalog({...valid,earnedCredits:99}),/exceeds target/);
+  assert.throws(()=>parseLocalCatalog({...valid,modules:[valid.modules[0],valid.modules[0]]}),/Duplicate/);
+  assert.throws(()=>parseLocalCatalog({...valid,modules:[{...valid.modules[0],code:"<script>"},valid.modules[1]]}),/Invalid module code/);
+  assert.throws(()=>parseLocalCatalog({...valid,schemaVersion:2}),/Unsupported/);
+});
+test("local data path is gitignored and requires explicit local URL opt-in", () => {
+  const ignored = readFileSync(new URL("../.gitignore", import.meta.url),"utf8");
+  const script = readFileSync(new URL("../prototypes/dashboard/app.js", import.meta.url),"utf8");
+  const html = readFileSync(new URL("../prototypes/dashboard/index.html",import.meta.url),"utf8");
+  assert.match(ignored,/^prototypes\/dashboard\/local-study-data\.json$/m);
+  assert.match(script,/get\("catalog"\) === "local"/);
+  assert.match(script,/credentials:"omit"/);
+  assert.match(html,/connect-src &#39;self&#39;/);
 });

@@ -259,3 +259,6 @@ h1 em { font-style:normal; color:var(--sh-accent); }
  .preview-disclaimer { align-items:start; }
 }
 @media (prefers-reduced-motion:reduce) { *,*::before,*::after { scroll-behavior:auto !important; transition:none !important; animation:none !important; } }
+
+/* Keep long study plans from pushing other customizable widgets off-screen. */
+.module-table-wrap { max-height: 370px; overflow-y: auto; }
