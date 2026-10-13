@@ -1,0 +1,109 @@
+name: "⚙️ Technical Story / Task"
+description: "API, Datenbank, CI, Architektur, Infrastruktur und Security"
+title: "[SH-TECH-DOMAIN-NNN] "
+labels: []
+body:
+  - type: markdown
+    attributes:
+      value: "Öffentliches Repository: ausschließlich synthetische Beispiele. Keine persönlichen Studiendaten, Hochschulunterlagen, privaten Hosts, Keys oder Screenshots mit vertraulichen Inhalten. Issues sind zunächst Backlog/Discovery; der DoR-Check ist eine spätere Freigabe, keine Pflichtbestätigung beim Einreichen. ID: SH-TECH-[DOMAIN]-NNN. Build-or-Reuse, Teststrategie und betroffene Systemgrenzen vor Ready klären."
+  - type: dropdown
+    id: kind
+    attributes:
+      label: "Technische Arbeitsart"
+      options: ["Enabler / Technical Story","Architecture","Database / Migration","API / Integration","Security / Privacy","CI / Testing","Infrastructure / Operations","Performance","Refactoring","Developer Experience","Documentation","Research / Spike","Maintenance"]
+    validations:
+      required: true
+  - type: dropdown
+    id: domain
+    attributes:
+      label: "Primäre Domain"
+      options: ["AUTH","STUDY","MOD","ECTS","ELEC","ROAD","DASH","LEARN","EXAM","LIB","UI","AI","API","DB","SEC","OPS","CI","DOC","CROSS"]
+    validations:
+      required: true
+  - type: textarea
+    id: objective
+    attributes:
+      label: "Objektives Ziel / Nutzen"
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: "Ausgangsproblem"
+    validations:
+      required: true
+  - type: textarea
+    id: target
+    attributes:
+      label: "Messbarer Zielzustand"
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: "Scope und Out of Scope"
+      description: "Was ist konkret enthalten, was ausdrücklich nicht?"
+    validations:
+      required: false
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: "Akzeptanzkriterien (AC-1, AC-2 ...)"
+      placeholder: "- [ ] AC-1: ...\n- [ ] AC-2: ..."
+    validations:
+      required: true
+  - type: textarea
+    id: verification
+    attributes:
+      label: "Verifikationsplan je AC"
+      description: "Vor der Implementierung objektive Prüfungen festlegen; automatisiert bevorzugt. Manuelle Tests kennzeichnen."
+      placeholder: "AC-1 → npm test ...\nAC-2 → manueller Browsercheck ..."
+    validations:
+      required: true
+  - type: textarea
+    id: components
+    attributes:
+      label: "Betroffene Komponenten / Dateien / Schnittstellen"
+    validations:
+      required: false
+  - type: textarea
+    id: references
+    attributes:
+      label: "Referenzen, Abhängigkeiten, DEC / ADR"
+      description: "Bestehende öffentliche Dokumentation, GitHub Issues, bestätigte Decisions oder bewusst 'Keine'."
+    validations:
+      required: false
+  - type: textarea
+    id: security
+    attributes:
+      label: "Datenfluss / Berechtigungen / Privacy / Lizenzen"
+      description: "Angeben, ob Auth, personenbezogene Daten, Fremdcode, Lizenzen oder externe Anbieter betroffen sind."
+    validations:
+      required: false
+  - type: textarea
+    id: build_or_reuse
+    attributes:
+      label: "Build-or-Reuse und Lizenz-/Provenienzcheck"
+      description: "Vorhandene Standardfunktion, Library oder Minimal-Build? Entscheidungsgrund, Security und Lizenz nennen."
+    validations:
+      required: false
+  - type: textarea
+    id: rollback
+    attributes:
+      label: "Rollback und Wiederherstellung (falls relevant)"
+    validations:
+      required: false
+  - type: textarea
+    id: open_questions
+    attributes:
+      label: "Offene Fragen / Decision erforderlich?"
+      description: "Nicht geklärte Produkt-/Architekturfragen dürfen nicht stillschweigend implementiert werden."
+    validations:
+      required: false
+  - type: dropdown
+    id: priority
+    attributes:
+      label: "Priorität (PO bestätigt bei Triage)"
+      options: ["Unbewertet","P0","P1","P2","P3"]
+    validations:
+      required: true

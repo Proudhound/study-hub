@@ -7,11 +7,15 @@ Status: **Entwurf**. Die Phasen sind nach Abhängigkeiten geordnet; keine künst
 - [x] Öffentliche, generische Produktbeschreibung und technische Leitplanken dokumentieren
 - [x] MIT-Lizenz festlegen und Lizenzdatei ergänzen
 - [ ] ADR für Tech-Stack, Authentifizierung und Installationsmodus erstellen
+- [x] Work-Item-/Issue-Taxonomie, ID-/Domain-Schema und DoR/DoD-Gates dokumentieren
+- [x] Forms für User Story, Technical Task, Bug, DEC und Epic anlegen
 - [x] Repository-Konventionen, PR-Vorlage, CI-Baseline und CONTRIBUTING definieren
 - [x] Erste synthetische Domain-/Theme-/Widget-Testfälle implementieren
 - [ ] Vollständige synthetische Demo-Datensätze und API-Testdaten definieren
 
 **Gate:** Keine realen Daten im Repository; Team kann das geplante System unabhängig von privaten Umgebungen verstehen.
+
+**Issue-Umsetzung:** siehe [Work Items](../docs/governance/WORK_ITEMS.md) und [Development Process](../docs/governance/DEVELOPMENT_PROCESS.md). Die manuellen Gates sind verbindlich; ein vollständiger automatischer DevLoop mit Human-Acceptance-Finalizer ist noch nicht installiert.
 
 ## Phase 1 — Technisches Fundament
 

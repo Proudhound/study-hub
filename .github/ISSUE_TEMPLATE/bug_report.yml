@@ -1,28 +1,115 @@
-name: Bug report
-description: Report a reproducible defect using only synthetic or redacted information
-title: "[Bug] "
+name: "🐛 Bug"
+description: "Reproduzierbarer Defekt; Nachweis vor dem Fix"
+title: "[SH-BUG-DOMAIN-NNN] "
 labels: ["bug"]
 body:
   - type: markdown
     attributes:
-      value: "This repository is public. Do not upload personal study records, credentials, private server data or copyrighted course materials."
-  - type: textarea
-    id: issue
+      value: "Öffentliches Repository: ausschließlich synthetische Beispiele. Keine persönlichen Studiendaten, Hochschulunterlagen, privaten Hosts, Keys oder Screenshots mit vertraulichen Inhalten. Issues sind zunächst Backlog/Discovery; der DoR-Check ist eine spätere Freigabe, keine Pflichtbestätigung beim Einreichen. Bugfix-Ablauf: Reproduce → Verification Method → Fix → Automated Verification → Independent QA/Review → Human Acceptance. Security-Schwachstellen nicht mit Exploitdetails öffentlich posten."
+  - type: dropdown
+    id: domain
     attributes:
-      label: Problem
-      description: What happened? What did you expect?
+      label: "Primäre Domain"
+      options: ["AUTH","STUDY","MOD","ECTS","ELEC","ROAD","DASH","LEARN","EXAM","LIB","UI","AI","API","DB","SEC","OPS","CI","DOC","CROSS"]
+    validations:
+      required: true
+  - type: dropdown
+    id: severity
+    attributes:
+      label: "Severity"
+      options: ["S0 – Kritisch: Datenverlust / Security / Totalausfall","S1 – Hoch: Kernfunktion blockiert","S2 – Mittel: eingeschränkt / Workaround","S3 – Niedrig","S4 – Kosmetisch"]
+    validations:
+      required: true
+  - type: dropdown
+    id: frequency
+    attributes:
+      label: "Häufigkeit"
+      options: ["Immer","Häufig","Gelegentlich","Selten","Unbekannt"]
     validations:
       required: true
   - type: textarea
-    id: steps
+    id: description
     attributes:
-      label: Steps to reproduce
-      description: Provide synthetic example data only.
+      label: "Defektbeschreibung"
     validations:
       required: true
-  - type: input
-    id: version
+  - type: textarea
+    id: environment
     attributes:
-      label: Version or commit
+      label: "Software-Version / Betriebssystem / Browser (ohne private Infrastrukturangaben)"
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: "Schritte zur Reproduktion – mit synthetischen Daten"
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: "Soll-Verhalten"
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: "Ist-Verhalten"
+    validations:
+      required: true
+  - type: textarea
+    id: method
+    attributes:
+      label: "Verification Method – festlegen VOR dem Fix"
+      description: "Welche reproduzierbare Prüfung zeigt, dass der Fehler behoben wurde?"
+    validations:
+      required: true
+  - type: textarea
+    id: impact
+    attributes:
+      label: "Daten-/Security-/Datenschutz-Auswirkungen"
+    validations:
+      required: true
+  - type: dropdown
+    id: regression
+    attributes:
+      label: "Regression"
+      options: ["Ja","Nein","Unbekannt"]
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: "Scope und Out of Scope"
+      description: "Was ist konkret enthalten, was ausdrücklich nicht?"
+    validations:
+      required: false
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: "Akzeptanzkriterien (AC-1, AC-2 ...)"
+      placeholder: "- [ ] AC-1: ...\n- [ ] AC-2: ..."
+    validations:
+      required: true
+  - type: textarea
+    id: verification
+    attributes:
+      label: "Verifikationsplan je AC"
+      description: "Vor der Implementierung objektive Prüfungen festlegen; automatisiert bevorzugt. Manuelle Tests kennzeichnen."
+      placeholder: "AC-1 → npm test ...\nAC-2 → manueller Browsercheck ..."
+    validations:
+      required: true
+  - type: textarea
+    id: references
+    attributes:
+      label: "Referenzen, Abhängigkeiten, DEC / ADR"
+      description: "Bestehende öffentliche Dokumentation, GitHub Issues, bestätigte Decisions oder bewusst 'Keine'."
+    validations:
+      required: false
+  - type: textarea
+    id: open_questions
+    attributes:
+      label: "Offene Fragen / Decision erforderlich?"
+      description: "Nicht geklärte Produkt-/Architekturfragen dürfen nicht stillschweigend implementiert werden."
     validations:
       required: false
