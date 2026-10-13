@@ -1,0 +1,17 @@
+{
+  "name": "study-hub",
+  "version": "0.0.0",
+  "description": "Open-source self-hosted study management platform",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.16.0"
+  },
+  "scripts": {
+    "check:public": "node scripts/check-public-repo.mjs",
+    "check:source": "node --experimental-strip-types --check packages/domain/src/progress.ts && node --experimental-strip-types --check packages/ui/src/theme.ts && node --experimental-strip-types --check packages/dashboard/src/modules.ts",
+    "test": "node --experimental-strip-types --test tests/*.test.mjs",
+    "check": "npm run check:public && npm run check:source && npm test"
+  }
+}

@@ -41,6 +41,12 @@ flowchart TD
 - Verschlüsselte, zugriffsbeschränkte Ablage **außerhalb des Git-Repositories**.
 - Wiederherstellung auf separater Testinstanz prüfen.
 - DB-Migrationen, Versionen und Backup-Kompatibilität dokumentieren; Rollback-Strategie definieren.
+- **Zwei getrennte verschlüsselte Backup-Ziele (lokal und offsite), Restore-Tests und Monitoring** als verbindliche Betriebsanforderung. Details: [BACKUP_AND_RESTORE.md](BACKUP_AND_RESTORE.md).
+- Backups sind derzeit **nur geplant**, nicht produktiv aktiviert.
+
+## Themes und modulare Oberfläche
+
+Semantische CSS-Tokens für Hell/Dunkel; Einstellung Hell/Dunkel/System samt persistierter Nutzerpräferenz. Dashboard-Widgets werden über eine geprüfte Registry ein-/ausgeschaltet und per nutzerbezogenem Layout konfiguriert. Das erste Theme-Schema und die Registry sind als testbare Kernbausteine in `packages/` abgelegt. Details: [DASHBOARD_MODULES.md](DASHBOARD_MODULES.md).
 
 ## Optionaler KI-Pfad
 
@@ -48,7 +54,7 @@ KI ist eine austauschbare, deaktivierte Erweiterung und darf den MVP nicht block
 
 ## Entwicklungs- und Qualitätsprozess
 
-- Änderungen über Pull Requests mit Review, automatischen Unit-, Integrations- und E2E-Tests.
+- Änderungen über Pull Requests mit Review. Derzeit ist **eine echte GitHub-Actions-Unit-Testpipeline** verfügbar; Integrations-/E2E-Tests kommen mit API und UI hinzu. [Teststatus](../docs/TESTING.md).
 - Lokale Testdaten werden mit einem **synthetischen** Seed erzeugt.
 - Builds sollen reproduzierbar sein (Lockfiles, gepinnte Container-Versionen, CI).
 - Entwicklungs- und Produktionsumgebung klar trennen.
@@ -60,4 +66,4 @@ KI ist eine austauschbare, deaktivierte Erweiterung und darf den MVP nicht block
 - Single-User-Modus im MVP gegenüber voll mandantenfähiger Datenhaltung
 - Storage/Import-Formate und Upload-Limits
 - Exakte Versionen und Lizenzprüfung der Abhängigkeiten
-- Freigabe der Lizenz für das Repository
+- Lizenz ist für das öffentliche Repository als **MIT** gesetzt.

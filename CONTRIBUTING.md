@@ -1,0 +1,31 @@
+# Mitmachen bei Study Hub
+
+Study Hub ist ein öffentliches Open-Source-Projekt (MIT). Beiträge zu Code, Dokumentation, Tests, Übersetzungen und Barrierefreiheit sind willkommen.
+
+## Einstieg
+
+1. [Produktumfang](planning/PRODUCT_SCOPE.md), [Roadmap](planning/ROADMAP.md) und [Architektur](planning/ARCHITECTURE.md) lesen.
+2. Bestehende Issues prüfen oder für größere Änderungen zuerst ein Feature-Issue eröffnen.
+3. Eigenen Branch erstellen und Änderungen mit **synthetischen Beispieldaten** umsetzen.
+4. Lokal Node.js 22.16+ installieren; dann npm ci und npm run check ausführen.
+5. Pull Request mit Ziel, Tests und ggf. Screenshot (ohne private Daten) öffnen.
+6. Feedback einarbeiten; Maintainer entscheiden nach Review über Merge.
+
+Derzeit enthält das Projekt bewusst nur eine kleine TS-Domänenreferenz, Theme-Tokens und Tests; eine lauffähige Web-App folgt in späteren Schritten. Bitte keine bestehenden Funktionen vorwegnehmen.
+
+## Entwicklungsstandards
+
+- Keine persönlichen Studiendaten, Prüfungsbelege, privaten Hochschulunterlagen oder privaten Serverdaten veröffentlichen.
+- Neue Domänenlogik mit Tests versehen; Fehlerfälle und doppelte Credits berücksichtigen.
+- Theme-abhängige UI-Komponenten benötigen hellen/dunklen Modus und Tastaturbedienung.
+- Dashboard-Widgets müssen über die Registry aktivierbar/deaktivierbar sein; spätere Widgets dürfen nicht als bereits verfügbar erscheinen.
+- API-Rechte und Datenisolation immer serverseitig durchsetzen.
+- Neue Abhängigkeiten begründen; Lizenz- und Sicherheitsprüfung durchführen.
+
+## Sicherheit
+
+Schwachstellen **nicht als öffentliches Issue mit reproduzierbaren Exploit-Details** melden. Wenn möglich, GitHubs private Vulnerability-Reporting-Funktion des Repositories verwenden, andernfalls zuerst nach einem privaten Meldeweg fragen. Niemals Zugangsdaten mitschicken.
+
+## Lizenzbeiträge
+
+Mit Einreichen eines Pull Requests bestätigst du, dass du zur Veröffentlichung deiner Beiträge unter der MIT-Lizenz berechtigt bist. Keine Beiträge mit unklaren Drittanbieter-Rechten einreichen.

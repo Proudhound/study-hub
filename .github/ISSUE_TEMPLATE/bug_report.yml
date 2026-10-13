@@ -1,0 +1,28 @@
+name: Bug report
+description: Report a reproducible defect using only synthetic or redacted information
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: "This repository is public. Do not upload personal study records, credentials, private server data or copyrighted course materials."
+  - type: textarea
+    id: issue
+    attributes:
+      label: Problem
+      description: What happened? What did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Provide synthetic example data only.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version or commit
+    validations:
+      required: false

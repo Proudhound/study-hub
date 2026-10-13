@@ -1,0 +1,27 @@
+/* Theme tokens for the future UI. Use data-theme on the html element.
+ * In "system" mode, JavaScript resolves matchMedia('(prefers-color-scheme: dark)').
+ * These tokens alone are NOT a functioning theme switcher.
+ */
+:root,
+:root[data-theme="light"] {
+  color-scheme: light;
+  --sh-bg: #f4f7fb;
+  --sh-surface: #ffffff;
+  --sh-text: #15243a;
+  --sh-muted: #536477;
+  --sh-border: #ced8e5;
+  --sh-accent: #076aa6;
+  --sh-progress-track: #dce7f2;
+  --sh-progress-fill: #007fad;
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --sh-bg: #0a1225;
+  --sh-surface: #14213a;
+  --sh-text: #e8f3ff;
+  --sh-muted: #a9bdd4;
+  --sh-border: #344761;
+  --sh-accent: #5dd6f5;
+  --sh-progress-track: #142b51;
+  --sh-progress-fill: #22c9f1;
+}
