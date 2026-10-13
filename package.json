@@ -10,7 +10,7 @@
   },
   "scripts": {
     "check:public": "node scripts/check-public-repo.mjs",
-    "check:source": "node --experimental-strip-types --check packages/domain/src/progress.ts && node --experimental-strip-types --check packages/ui/src/theme.ts && node --experimental-strip-types --check packages/dashboard/src/modules.ts",
+    "check:source": "node --experimental-strip-types --check packages/domain/src/progress.ts && node --experimental-strip-types --check packages/ui/src/theme.ts && node --experimental-strip-types --check packages/dashboard/src/modules.ts && node --check prototypes/dashboard/state.js && node --check prototypes/dashboard/demo-data.js && node --check prototypes/dashboard/theme-bootstrap.js && node --check prototypes/dashboard/app.js",
     "test": "node --experimental-strip-types --test tests/*.test.mjs",
     "check": "npm run check:public && npm run check:source && npm test"
   }

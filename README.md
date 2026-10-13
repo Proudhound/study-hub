@@ -86,6 +86,16 @@ Study Hub verwendet ein strukturiertes, öffentliches GitHub-Issue-System für *
 
 Das Repository verwendet **eine eigene, generische Prozessbeschreibung**. Es benötigt keinen Zugriff auf andere private Projekte oder deren Agentenruntimes.
 
+## Dashboard-UX-Vorschau
+
+Die erste interaktive, **vollständig synthetische** [Dashboard-Vorschau](prototypes/dashboard/README.md) kann lokal ohne zusätzliche Pakete ausprobiert werden:
+
+```bash
+python3 -m http.server 4173
+```
+
+Dann [http://localhost:4173/prototypes/dashboard/](http://localhost:4173/prototypes/dashboard/) öffnen. Enthalten sind die responsive Bereichsnavigation, Light/Dark/System, ein anpassbares Kachelraster, 0-basierte Credits-Anzeige, Demo-Modultabs und Aufgaben. **Die Vorschau ist bewusst kein produktives React-Frontend und speichert keine Studienakten.** Umsetzung in React + API/DB folgt separat nach Designabnahme.
+
 ## Tests bereits verfügbar
 
 Mit Node.js 22.16+ und Git:

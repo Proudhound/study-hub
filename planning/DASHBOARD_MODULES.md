@@ -1,6 +1,6 @@
 # Modulares Dashboard und Themes
 
-**Status:** Designkontrakt und kleine testbare Kernbausteine vorhanden; eine echte grafische Oberfläche ist **noch nicht implementiert**.
+**Status:** Designkontrakt, getestete Kernbausteine und eine **statische, interaktive UI-Vorschau** unter `prototypes/dashboard/` vorhanden. Die produktive React-Oberfläche, Nutzerkonten und Datenbankanbindung sind **noch nicht implementiert**.
 
 ## Dashboard als Widget-Baukasten
 
@@ -41,8 +41,8 @@ Anforderungen:
 5. Kontraste, Fokusrahmen, Fehlermeldungen und Lesbarkeit in beiden Modi testen.
 6. Bei deaktiviertem JavaScript bleibt eine sinnvoll lesbare Basisseite erreichbar, soweit technisch möglich.
 
-Vorbereitete Dateien: packages/ui/src/theme.ts (Entscheidungslogik) und packages/ui/src/tokens.css (helle/dunkle Token-Sätze); deren Verhalten ist durch die CI getestet, **der sichtbare Umschalter folgt mit der React-Oberfläche**.
+Vorbereitete Dateien: `packages/ui/src/theme.ts` und `packages/ui/src/tokens.css`. In `prototypes/dashboard/` gibt es bereits einen **funktionierenden Umschalter Hell/Dunkel/System**, dessen lokale Persistenz jedoch nur der Vorschau dient. Die spätere React-App speichert benutzerspezifische Layout- und Theme-Einstellungen über die private API.
 
 ## Kein Missverständnis zum Funktionsstand
 
-Die ersten Tests und Module schaffen eine Architekturgrundlage. Es existiert aktuell weder ein konfigurierbares Nutzer-Dashboard noch eine fertige Oberfläche, Installation oder lokale Datenbank. UI-Ausgestaltung und Widget-Auswahl werden vor Implementierung gesondert besprochen.
+Die ersten Tests und Module schaffen eine Architekturgrundlage. Der UX-Prototyp unterstützt Kachelsichtbarkeit und Reihenfolge ohne produktive Datenhaltung. **Es existiert weiterhin weder ein produktives Nutzer-Dashboard noch eine React-App, Authentifizierung, API oder Datenbank.** Die Vorschau wird vor einer produktiven Umsetzung zur Designfreigabe vorgestellt.
