@@ -6,6 +6,7 @@ import { demo as exampleData } from "./demo-data.js";
 import { parseLocalCatalog } from "./catalog.js";
 let demo = exampleData;
 let localCatalogLoaded = false;
+const widgetCache = new Map();
 
 const $ = selector => document.querySelector(selector);
 const $$ = selector => [...document.querySelectorAll(selector)];
@@ -192,16 +193,23 @@ function setupTabs(article) {
       article.querySelectorAll(".tab").forEach(b => {
         const current = b === button;
         b.classList.toggle("active", current);
-        b.setAttribute("aria-selected", String(current));
+        b.setAttribute("aria-pressed", String(current));
       });
       renderModuleRows(article, button.dataset.tab);
     });
   });
 }
 function renderRoadmap(article) {
-  if (!Array.isArray(demo.roadmap) || demo.roadmap.length === 0) return;
   const root = article.querySelector(".milestone-list");
   root.replaceChildren();
+  if (!Array.isArray(demo.roadmap) || demo.roadmap.length === 0) {
+    const empty = document.createElement("li");
+    empty.className = "milestone-empty";
+    empty.textContent = "Für dieses Programm wurden noch keine Roadmap-Meilensteine erfasst.";
+    root.append(empty);
+    article.querySelector(".widget-caption").textContent = "Keine Meilensteine verfügbar";
+    return;
+  }
   for (const [i, milestone] of demo.roadmap.slice(0, 3).entries()) {
     const li = document.createElement("li");
     li.className = "milestone";
@@ -234,12 +242,24 @@ function updateOverview() {
   document.querySelector(".overview-cell:nth-child(2) small").textContent = "STUDIENPLAN · KEIN LEISTUNGSNACHWEIS";
   document.querySelector(".overview-cell:nth-child(3) small").textContent = "PLANUNGSVORSCHLÄGE";
   document.querySelector(".page-subtitle").textContent = demo.degree + " · " + demo.modules.length + " Planpositionen · " + demo.totalCredits + " ECTS (Pflicht- und Wahlbereiche)";
-  document.querySelector(".preview-disclaimer").textContent = "ⓘ Lokaler, nicht veröffentlichter Studienkatalog. Credits und Semester stammen aus dem bereitgestellten Studienverlaufsplan; Leistungsstand, Anerkennungen und Vertiefungswahl sind nicht hinterlegt. Keine API oder Cloud.";
+  const progressInfo = Number.isFinite(demo.earnedCredits)
+    ? "Ein lokal erfasster Leistungsstand wird angezeigt (nicht extern verifiziert)."
+    : "Es ist kein persönlicher Leistungsstand erfasst.";
+  document.querySelector(".preview-disclaimer").textContent =
+    "ⓘ Lokaler, nicht veröffentlichter Studienkatalog. " + progressInfo +
+    " Anerkennungen und Vertiefungsentscheidungen gelten ohne gesonderte Bestätigung nicht als amtlich geprüft. Keine API oder Cloud.";
 }
 
 function renderTasks(article) {
   const parent = article.querySelector("#tasks-list");
   parent.replaceChildren();
+  article.querySelector(".count-pill").textContent = String(demo.tasks.length).padStart(2, "0");
+  if (demo.tasks.length === 0) {
+    const empty = document.createElement("p");
+    empty.className = "widget-caption";
+    empty.textContent = "Noch keine Lernaufgaben hinterlegt.";
+    parent.append(empty);
+  }
   for (const task of demo.tasks) {
     const label = document.createElement("label");
     label.className = "task-row";
@@ -264,12 +284,16 @@ function renderWidgets() {
   let visible = 0;
   for (const id of layout.order) {
     if (layout.hidden.includes(id)) continue;
-    const article = widgetFromTemplate(id);
-    if (!article) continue;
-    if (id === "credits") addProgress(article);
-    if (id === "roadmap") renderRoadmap(article);
-    if (id === "module-cockpit") setupTabs(article);
-    if (id === "tasks") renderTasks(article);
+    let article = widgetCache.get(id);
+    if (!article) {
+      article = widgetFromTemplate(id);
+      if (!article) continue;
+      if (id === "credits") addProgress(article);
+      if (id === "roadmap") renderRoadmap(article);
+      if (id === "module-cockpit") setupTabs(article);
+      if (id === "tasks") renderTasks(article);
+      widgetCache.set(id, article);
+    }
     grid.append(article);
     visible += 1;
   }
@@ -358,6 +382,7 @@ async function initializeCatalog() {
       if (raw.length > 256000) throw new RangeError("Catalog too large");
       demo = parseLocalCatalog(JSON.parse(raw));
       localCatalogLoaded = true;
+      widgetCache.clear(); // Fresh data: never retain synthetic widget nodes.
     } catch (_) {
       document.querySelector(".preview-disclaimer").textContent =
         "ⓘ Lokaler Katalog konnte nicht geladen werden. Es wird weiterhin die synthetische Demo angezeigt. Prüfe den Dateinamen local-study-data.json und öffne die Browser-Konsole für die Netzwerkantwort.";

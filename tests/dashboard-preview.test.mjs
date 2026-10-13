@@ -107,3 +107,28 @@ test("dashboard mobile menu and widget customizer preserve keyboard access", () 
   assert.match(source, /preferred\.focus\(\)/);
   assert.match(source, /fallback\?\.focus\(\)/);
 });
+
+test("catalog accepts higher program targets without allowing oversized individual modules", () => {
+  const row = (code,credits)=>({code,title:"Sample Module",credits,kind:"Pflicht",status:"Geplant"});
+  const data = {schemaVersion:1,program:"240 ECTS Programme",degree:"Bachelor",totalCredits:240,earnedCredits:220,
+    modules:[row("A101",120),row("A102",120)],roadmap:[],tasks:[]};
+  assert.equal(parseLocalCatalog(data).totalCredits,240);
+  assert.equal(parseLocalCatalog(data).earnedCredits,220);
+  assert.throws(()=>parseLocalCatalog({...data,totalCredits:210}),/credits do not match/);
+  assert.throws(()=>parseLocalCatalog({...data,earnedCredits:250}),/exceeds target/);
+  assert.throws(()=>parseLocalCatalog({...data,modules:[row("A101",200),row("A102",40)]}),/Invalid credit/);
+});
+test("catalog-empty states, data-driven badge and stable widget nodes", () => {
+  const app = readFileSync(new URL("../prototypes/dashboard/app.js",import.meta.url),"utf8");
+  const html = readFileSync(new URL("../prototypes/dashboard/index.html",import.meta.url),"utf8");
+  assert.match(app,/root\.replaceChildren\(\);\s*if \(!Array\.isArray\(demo\.roadmap\)/);
+  assert.match(app,/Noch keine Lernaufgaben hinterlegt/);
+  assert.match(app,/demo\.tasks\.length\)\.padStart\(2, "0"\)/);
+  assert.match(app,/Number\.isFinite\(demo\.earnedCredits\)\s*\? "Ein lokal erfasster Leistungsstand/);
+  assert.match(app,/const widgetCache = new Map\(\)/);
+  assert.match(app,/let article = widgetCache\.get\(id\)/);
+  assert.match(app,/widgetCache\.clear\(\)/);
+  assert.match(html,/role="group" aria-label="Module filtern"/);
+  assert.doesNotMatch(html,/role="tablist"|role="tab"/);
+  assert.match(app,/b\.setAttribute\("aria-pressed", String\(current\)\)/);
+});

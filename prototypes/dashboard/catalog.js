@@ -17,7 +17,8 @@ export function parseLocalCatalog(source) {
   }
   const program = text(source.program);
   const degree = text(source.degree);
-  const totalCredits = credits(source.totalCredits);
+  const totalCredits = source.totalCredits;
+  if (!Number.isFinite(totalCredits) || totalCredits <= 0 || totalCredits > 10000) throw new RangeError("Invalid program credit target");
   if (totalCredits <= 0 || !Array.isArray(source.modules) || source.modules.length < 1 || source.modules.length > MAX_MODULES) {
     throw new RangeError("Missing or excessive modules");
   }
@@ -43,7 +44,8 @@ export function parseLocalCatalog(source) {
   });
   const sum = Math.round(modules.reduce((acc, module) => acc + module.credits, 0) * 100) / 100;
   if (Math.abs(sum - totalCredits) > 0.01) throw new RangeError("Module credits do not match plan target");
-  const earnedCredits = source.earnedCredits === null || source.earnedCredits === undefined ? null : credits(source.earnedCredits);
+  const earnedCredits = source.earnedCredits === null || source.earnedCredits === undefined ? null : source.earnedCredits;
+  if (earnedCredits !== null && (!Number.isFinite(earnedCredits) || earnedCredits < 0)) throw new RangeError("Invalid earned credits");
   if (earnedCredits !== null && earnedCredits > totalCredits) throw new RangeError("Progress exceeds target");
   function entries(raw, fields, count) {
     if (!Array.isArray(raw) || raw.length > count) throw new TypeError("Invalid preview entries");

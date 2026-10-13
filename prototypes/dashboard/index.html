@@ -124,10 +124,10 @@
   </template>
   <template id="widget-module-cockpit">
     <div class="widget-title"><span class="widget-icon icon-blue">▦</span><div><span class="widget-eyebrow">STUDIENVERWALTUNG</span><h3>Meine Module</h3></div><button class="text-link widget-link" type="button" data-go="modules">Alle ansehen ↗</button></div>
-    <div class="tabs" role="tablist" aria-label="Module filtern">
-      <button type="button" class="tab active" role="tab" aria-selected="true" data-tab="all">Alle Module</button>
-      <button type="button" class="tab" role="tab" aria-selected="false" data-tab="elective">Wahloptionen</button>
-      <button type="button" class="tab" role="tab" aria-selected="false" data-tab="roadmap">Roadmap</button>
+    <div class="tabs" role="group" aria-label="Module filtern">
+      <button type="button" class="tab active" aria-pressed="true" data-tab="all">Alle Module</button>
+      <button type="button" class="tab" aria-pressed="false" data-tab="elective">Wahloptionen</button>
+      <button type="button" class="tab" aria-pressed="false" data-tab="roadmap">Roadmap</button>
     </div>
     <div class="module-table-wrap"><table class="module-table"><thead><tr><th>MODUL</th><th>ART</th><th>STATUS</th><th>CREDITS</th></tr></thead><tbody id="module-table-body"></tbody></table></div>
   </template>
