@@ -1,0 +1,394 @@
+import {
+  MODULES, LAYOUT_STORAGE_KEY, THEME_STORAGE_KEY,
+  normalizeLayout, setModuleVisible, moveModule, parseTheme, resolveTheme, progressSegments
+} from "./state.js";
+import { demo as exampleData } from "./demo-data.js";
+import { parseLocalCatalog } from "./catalog.js";
+let demo = exampleData;
+let localCatalogLoaded = false;
+const widgetCache = new Map();
+
+const $ = selector => document.querySelector(selector);
+const $$ = selector => [...document.querySelectorAll(selector)];
+const view = {
+  dashboard: ["Dashboard", "Deine persönliche Studienübersicht."],
+  programs: ["Studiengänge", "Verwalte später mehrere Studienprogramme, Abschlüsse und Ziel-Credits."],
+  modules: ["Module & Credits", "Eine Datenquelle mit Filtern für alle Module, Wahloptionen und fachliche Abhängigkeiten."],
+  roadmap: ["Studien-Roadmap", "Visualisiere später fachliche Empfehlungen und formale Voraussetzungen getrennt."],
+  tasks: ["Lernaufgaben", "Plane später Aufgaben nach Priorität, verfügbarer Zeit und Energie."],
+  exams: ["Prüfungen", "Prüfungstermine und Vorbereitung sind für eine spätere Phase vorgesehen."],
+  flashcards: ["Lernkarten", "Active Recall und Wiederholungspläne folgen in einer späteren Phase."],
+  library: ["Bibliothek", "Private Literatur, Quellen und Notizen folgen in einer späteren Phase."],
+  focus: ["Fokusmodus", "Timer und Lern-Sessions sind als Erweiterung geplant."],
+  settings: ["Einstellungen", "Themes stehen bereits oben rechts zur Verfügung. Konto- und Studiengangseinstellungen folgen später."]
+};
+let layout = normalizeLayout(readJson(LAYOUT_STORAGE_KEY));
+let theme = parseTheme(readString(THEME_STORAGE_KEY));
+const media = window.matchMedia("(prefers-color-scheme: dark)");
+const dialog = $("#customize-dialog");
+const menuButton = $("#menu-toggle");
+const sidebar = $("#sidebar");
+const backdrop = $("#sidebar-backdrop");
+let activeRoute = "dashboard";
+
+function readString(key) {
+  try { return localStorage.getItem(key); } catch (_) { return null; }
+}
+function readJson(key) {
+  try { return JSON.parse(localStorage.getItem(key) || "null"); } catch (_) { return null; }
+}
+function write(key, value) {
+  try { localStorage.setItem(key, value); } catch (_) { /* Preview still works in-memory. */ }
+}
+function applyTheme() {
+  document.documentElement.dataset.theme = resolveTheme(theme, media.matches);
+  $("#theme-select").value = theme;
+}
+$("#theme-select").addEventListener("change", event => {
+  theme = parseTheme(event.target.value);
+  write(THEME_STORAGE_KEY, theme);
+  applyTheme();
+});
+media.addEventListener("change", () => { if (theme === "system") applyTheme(); });
+applyTheme();
+
+const mobileLayout = window.matchMedia("(max-width: 700px)");
+function syncSidebarA11y() {
+  const hidden = mobileLayout.matches && !sidebar.classList.contains("sidebar-open");
+  sidebar.inert = hidden;
+  if (hidden) sidebar.setAttribute("aria-hidden", "true");
+  else sidebar.removeAttribute("aria-hidden");
+}
+function closeSidebar() {
+  const restoreFocus = mobileLayout.matches && (sidebar.contains(document.activeElement) || document.activeElement === backdrop);
+  if (restoreFocus) menuButton.focus();
+  sidebar.classList.remove("sidebar-open");
+  backdrop.hidden = true;
+  menuButton.setAttribute("aria-expanded", "false");
+  syncSidebarA11y();
+}
+function openSidebar() {
+  sidebar.inert = false;
+  sidebar.removeAttribute("aria-hidden");
+  sidebar.classList.add("sidebar-open");
+  backdrop.hidden = false;
+  menuButton.setAttribute("aria-expanded", "true");
+  (sidebar.querySelector('[aria-current="page"]') || sidebar.querySelector("[data-route]"))?.focus();
+}
+menuButton.addEventListener("click", () => {
+  if (sidebar.classList.contains("sidebar-open")) closeSidebar();
+  else openSidebar();
+});
+backdrop.addEventListener("click", closeSidebar);
+window.addEventListener("keydown", event => {
+  if (event.key === "Escape" && sidebar.classList.contains("sidebar-open")) closeSidebar();
+});
+mobileLayout.addEventListener("change", closeSidebar);
+syncSidebarA11y();
+
+function navigate(route) {
+  if (!Object.hasOwn(view, route)) return;
+  activeRoute = route;
+  $("#breadcrumb").textContent = view[route][0];
+  $$("#sidebar [data-route]").forEach(button => {
+    const selected = button.dataset.route === route;
+    button.classList.toggle("active", selected);
+    if (selected) button.setAttribute("aria-current", "page");
+    else button.removeAttribute("aria-current");
+  });
+  $("#dashboard-page").hidden = route !== "dashboard";
+  $("#other-page").hidden = route === "dashboard";
+  if (route !== "dashboard") {
+    $("#other-heading").textContent = view[route][0];
+    $("#other-description").textContent = view[route][1];
+    $("#other-next").textContent = "Navigation und Layout sind bereits vorbereitet. Fachfunktionen, API und Datenspeicherung werden erst nach gesonderter Umsetzung aktiviert.";
+  }
+  closeSidebar();
+  $("#main-content").focus({ preventScroll: true });
+  window.scrollTo({ top: 0, behavior: "auto" });
+}
+$$("#sidebar [data-route]").forEach(button => button.addEventListener("click", () => navigate(button.dataset.route)));
+$("#back-to-dashboard").addEventListener("click", () => navigate("dashboard"));
+document.addEventListener("click", event => {
+  const link = event.target.closest("[data-go]");
+  if (link) navigate(link.dataset.go);
+});
+
+function widgetFromTemplate(id) {
+  const source = $("#widget-" + id);
+  if (!source) return null;
+  const article = document.createElement("article");
+  article.className = "widget-card widget-" + id;
+  article.dataset.widget = id;
+  article.appendChild(source.content.cloneNode(true));
+  return article;
+}
+function addProgress(article) {
+  const knownProgress = Number.isFinite(demo.earnedCredits) && demo.earnedCredits >= 0;
+  const progress = progressSegments(knownProgress ? demo.earnedCredits : 0, demo.totalCredits, 40);
+  const digits = article.querySelector("#credit-primary");
+  digits.textContent = "";
+  digits.append(document.createTextNode((knownProgress ? String(progress.earned) : "—") + " "));
+  const sub = document.createElement("span");
+  sub.textContent = "/ " + progress.target;
+  digits.append(sub);
+  const bar = article.querySelector("#credit-segments");
+  bar.replaceChildren();
+  bar.setAttribute("aria-valuemin", "0");
+  bar.setAttribute("aria-valuemax", String(progress.target));
+  if (knownProgress) {
+    bar.setAttribute("aria-valuenow", String(progress.earned));
+    bar.removeAttribute("aria-valuetext");
+  } else {
+    bar.removeAttribute("aria-valuenow");
+    bar.setAttribute("aria-valuetext", "Leistungsstand noch nicht erfasst");
+  }
+  for (let i = 0; i < progress.count; i++) {
+    const segment = document.createElement("span");
+    segment.className = "segment" + (i < progress.filled ? " filled" : "");
+    segment.setAttribute("aria-hidden", "true");
+    bar.append(segment);
+  }
+  article.querySelector("#credit-percent").textContent = knownProgress ? progress.percent.toLocaleString("de-DE") + " % abgeschlossen" : "Leistungsstand nicht erfasst";
+  const labels = article.querySelectorAll(".progress-scale > span");
+  labels[0].textContent = "0 Credits";
+  labels[1].textContent = progress.target + " Credits";
+  const info = article.querySelectorAll(".credit-note");
+  info[0].lastChild.textContent = knownProgress ? " " + progress.earned + " erworben" : " Noch kein Leistungsstand";
+  info[1].lastChild.textContent = knownProgress ? " " + (progress.target - progress.earned) + " offen" : " " + progress.target + " Credits im Studienplan";
+}
+function renderModuleRows(article, tab) {
+  const table = article.querySelector("#module-table-body");
+  table.replaceChildren();
+  const models = tab === "elective" ? demo.modules.filter(x => x.kind === "Wahloption" || x.kind === "Wahlpflichtplatz")
+    : tab === "roadmap" ? demo.modules.filter(x => x.semester ? x.semester <= 2 : x.status !== "Abgeschlossen") : demo.modules;
+  for (const row of models) {
+    const tr = document.createElement("tr");
+    const moduleCell = document.createElement("td");
+    const name = document.createElement("strong");
+    name.textContent = row.title;
+    const code = document.createElement("small");
+    code.textContent = row.code + (row.semester ? " · " + row.semester + ". Semester" : "");
+    moduleCell.append(name, code);
+    const type = document.createElement("td");
+    const typeTag = document.createElement("span");
+    typeTag.className = "module-tag";
+    typeTag.textContent = row.kind;
+    type.append(typeTag);
+    const status = document.createElement("td");
+    const statusTag = document.createElement("span");
+    statusTag.className = "status-tag " + (row.status === "Abgeschlossen" ? "done" : row.status === "In Arbeit" ? "ongoing" : "neutral");
+    statusTag.textContent = row.status;
+    status.append(statusTag);
+    const points = document.createElement("td");
+    points.textContent = String(row.credits);
+    tr.append(moduleCell, type, status, points);
+    table.append(tr);
+  }
+}
+function setupTabs(article) {
+  renderModuleRows(article, "all");
+  article.querySelectorAll(".tab").forEach(button => {
+    button.addEventListener("click", () => {
+      article.querySelectorAll(".tab").forEach(b => {
+        const current = b === button;
+        b.classList.toggle("active", current);
+        b.setAttribute("aria-pressed", String(current));
+      });
+      renderModuleRows(article, button.dataset.tab);
+    });
+  });
+}
+function renderRoadmap(article) {
+  const root = article.querySelector(".milestone-list");
+  root.replaceChildren();
+  if (!Array.isArray(demo.roadmap) || demo.roadmap.length === 0) {
+    const empty = document.createElement("li");
+    empty.className = "milestone-empty";
+    empty.textContent = "Für dieses Programm wurden noch keine Roadmap-Meilensteine erfasst.";
+    root.append(empty);
+    article.querySelector(".widget-caption").textContent = "Keine Meilensteine verfügbar";
+    return;
+  }
+  for (const [i, milestone] of demo.roadmap.slice(0, 3).entries()) {
+    const li = document.createElement("li");
+    li.className = "milestone";
+    const badge = document.createElement("span");
+    badge.className = "milestone-indicator";
+    badge.textContent = String(i + 1);
+    const details = document.createElement("div");
+    const heading = document.createElement("strong");
+    heading.textContent = milestone.title;
+    const caption = document.createElement("small");
+    caption.textContent = milestone.subtitle;
+    details.append(heading, caption);
+    li.append(badge, details);
+    root.append(li);
+  }
+  article.querySelector(".widget-caption").textContent = "Meilensteine aus dem Studienverlaufsplan";
+}
+function updateOverview() {
+  const info = document.querySelectorAll(".overview-cell strong");
+  if (info.length !== 3) return;
+  info[0].textContent = demo.program;
+  info[1].textContent = Number.isFinite(demo.earnedCredits)
+    ? demo.earnedCredits + " von " + demo.totalCredits + " Credits"
+    : demo.totalCredits + " ECTS · Leistungsstand offen";
+  info[2].textContent = demo.tasks.length + (localCatalogLoaded ? " Planungsvorschläge" : " Lernaufgaben");
+  if (!localCatalogLoaded) return;
+  document.querySelector(".workspace-info strong").textContent = demo.program;
+  document.querySelector(".workspace-info span").textContent = demo.degree;
+  document.querySelector(".demo-pill").textContent = "LOKALER KATALOG";
+  document.querySelector(".overview-cell:nth-child(2) small").textContent = "STUDIENPLAN · KEIN LEISTUNGSNACHWEIS";
+  document.querySelector(".overview-cell:nth-child(3) small").textContent = "PLANUNGSVORSCHLÄGE";
+  document.querySelector(".page-subtitle").textContent = demo.degree + " · " + demo.modules.length + " Planpositionen · " + demo.totalCredits + " ECTS (Pflicht- und Wahlbereiche)";
+  const progressInfo = Number.isFinite(demo.earnedCredits)
+    ? "Ein lokal erfasster Leistungsstand wird angezeigt (nicht extern verifiziert)."
+    : "Es ist kein persönlicher Leistungsstand erfasst.";
+  document.querySelector(".preview-disclaimer").textContent =
+    "ⓘ Lokaler, nicht veröffentlichter Studienkatalog. " + progressInfo +
+    " Anerkennungen und Vertiefungsentscheidungen gelten ohne gesonderte Bestätigung nicht als amtlich geprüft. Keine API oder Cloud.";
+}
+
+function renderTasks(article) {
+  const parent = article.querySelector("#tasks-list");
+  parent.replaceChildren();
+  article.querySelector(".count-pill").textContent = String(demo.tasks.length).padStart(2, "0");
+  if (demo.tasks.length === 0) {
+    const empty = document.createElement("p");
+    empty.className = "widget-caption";
+    empty.textContent = "Noch keine Lernaufgaben hinterlegt.";
+    parent.append(empty);
+  }
+  for (const task of demo.tasks) {
+    const label = document.createElement("label");
+    label.className = "task-row";
+    const check = document.createElement("input");
+    check.type = "checkbox";
+    check.setAttribute("aria-label", task.title + " (nur Demo)");
+    check.addEventListener("change", () => label.classList.toggle("checked", check.checked));
+    const info = document.createElement("span");
+    info.className = "task-info";
+    const title = document.createElement("strong");
+    title.textContent = task.title;
+    const meta = document.createElement("small");
+    meta.textContent = task.time + " · " + task.kind;
+    info.append(title, meta);
+    label.append(check, info);
+    parent.append(label);
+  }
+}
+function renderWidgets() {
+  const grid = $("#widget-grid");
+  grid.replaceChildren();
+  let visible = 0;
+  for (const id of layout.order) {
+    if (layout.hidden.includes(id)) continue;
+    let article = widgetCache.get(id);
+    if (!article) {
+      article = widgetFromTemplate(id);
+      if (!article) continue;
+      if (id === "credits") addProgress(article);
+      if (id === "roadmap") renderRoadmap(article);
+      if (id === "module-cockpit") setupTabs(article);
+      if (id === "tasks") renderTasks(article);
+      widgetCache.set(id, article);
+    }
+    grid.append(article);
+    visible += 1;
+  }
+  $("#empty-widgets").hidden = visible > 0;
+}
+function changeLayout(mutator, focusTarget = null) {
+  layout = mutator(layout);
+  write(LAYOUT_STORAGE_KEY, JSON.stringify(layout));
+  renderWidgets();
+  renderCustomizer();
+  if (focusTarget && dialog.open) {
+    const row = [...$("#customize-list").children].find(element => element.dataset.module === focusTarget.id);
+    if (row) {
+      const preferred = focusTarget.action === "toggle"
+        ? row.querySelector('input[type="checkbox"]')
+        : [...row.querySelectorAll(".reorder-controls button")].find(button => button.dataset.direction === String(focusTarget.action));
+      const fallback = row.querySelector('input[type="checkbox"]');
+      if (preferred && !preferred.disabled) preferred.focus();
+      else fallback?.focus();
+    }
+  }
+}
+function renderCustomizer() {
+  const list = $("#customize-list");
+  list.replaceChildren();
+  const unavailable = MODULES.filter(x => !x.available);
+  const entries = [
+    ...layout.order.map(id => MODULES.find(x => x.id === id)).filter(Boolean),
+    ...unavailable
+  ];
+  entries.forEach((entry, index) => {
+    const row = document.createElement("div");
+    row.className = "customize-row" + (entry.available ? "" : " future-row");
+    row.dataset.module = entry.id;
+    const label = document.createElement("label");
+    const input = document.createElement("input");
+    input.type = "checkbox";
+    input.checked = entry.available && !layout.hidden.includes(entry.id);
+    input.disabled = !entry.available;
+    input.addEventListener("change", () => changeLayout(old => setModuleVisible(old, entry.id, input.checked), {id:entry.id,action:"toggle"}));
+    const text = document.createElement("span");
+    text.textContent = entry.label;
+    label.append(input, text);
+    row.append(label);
+    if (entry.available) {
+      const controls = document.createElement("div");
+      controls.className = "reorder-controls";
+      for (const [direction, glyph, desc] of [[-1, "↑", "nach oben"], [1, "↓", "nach unten"]]) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "icon-button";
+        button.textContent = glyph;
+        button.disabled = index + direction < 0 || index + direction >= layout.order.length;
+        button.setAttribute("aria-label", entry.label + " " + desc);
+        button.dataset.direction = String(direction);
+        button.addEventListener("click", () => changeLayout(old => moveModule(old, entry.id, direction), {id:entry.id,action:direction}));
+        controls.append(button);
+      }
+      row.append(controls);
+    } else {
+      const badge = document.createElement("span");
+      badge.className = "coming-soon";
+      badge.textContent = "Später";
+      row.append(badge);
+    }
+    list.append(row);
+  });
+}
+function openCustomizer() {
+  renderCustomizer();
+  if (!dialog.open) dialog.showModal();
+}
+for (const btn of ["#customize-top", "#customize-secondary", "#empty-customize"]) {
+  $(btn).addEventListener("click", openCustomizer);
+}
+$("#close-customize").addEventListener("click", () => dialog.close());
+$("#done-customize").addEventListener("click", () => dialog.close());
+$("#reset-customize").addEventListener("click", () => changeLayout(() => normalizeLayout(null)));
+dialog.addEventListener("click", event => { if (event.target === dialog) dialog.close(); });
+async function initializeCatalog() {
+  if (new URLSearchParams(window.location.search).get("catalog") === "local") {
+    try {
+      const response = await fetch("./local-study-data.json", {cache:"no-store",credentials:"omit",redirect:"error"});
+      if (!response.ok) throw new Error("Local catalog not found");
+      const raw = await response.text();
+      if (raw.length > 256000) throw new RangeError("Catalog too large");
+      demo = parseLocalCatalog(JSON.parse(raw));
+      localCatalogLoaded = true;
+      widgetCache.clear(); // Fresh data: never retain synthetic widget nodes.
+    } catch (_) {
+      document.querySelector(".preview-disclaimer").textContent =
+        "ⓘ Lokaler Katalog konnte nicht geladen werden. Es wird weiterhin die synthetische Demo angezeigt. Prüfe den Dateinamen local-study-data.json und öffne die Browser-Konsole für die Netzwerkantwort.";
+    }
+  }
+  updateOverview();
+  renderWidgets();
+}
+initializeCatalog();

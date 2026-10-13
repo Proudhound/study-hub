@@ -38,8 +38,10 @@ Status: **Entwurf**. Die Phasen sind nach Abhängigkeiten geordnet; keine künst
 - [ ] Abhängigkeiten und formale Zulassungsregeln erfassen
 - [ ] Dashboard: `erreicht / Soll`, Prozent, 0-basierte segmentierte Anzeige
 - [ ] Ein Modul-Cockpit mit Ansichten: **Alle Module / Vertiefungen / Roadmap**
-- [ ] Modulare Startseite: Widgets ein-/ausblenden und sortieren (Layout persistent)
-- [ ] Light/Dark/System-Wechsel mit gespeicherter Präferenz und Accessibility-Test
+- [x] Statischen, interaktiven UX-Prototyp für Dashboard-Navigation, Sichtbarkeit und Reihenfolge erstellen (nur lokaler Browser)
+- [ ] Produktive React-Startseite: Widgets ein-/ausblenden, sortieren und Layout je Nutzer über API persistieren
+- [x] Theme-Umschalter Hell/Dunkel/System als Prototyp mit lokalem Browser-Speicher implementieren
+- [ ] Produktive React-Implementierung mit nutzerbezogener Theme-Persistenz und vollständigem Accessibility-Test
 - [ ] Lernaufgaben, Sortierung, Filter und einfacher Export
 
 **Gate:** Die Credit-Aggregation ist bei Anerkennungen, Alternativen und Regeländerungen korrekt; automatisierte Tests decken Doppelzählung ab.

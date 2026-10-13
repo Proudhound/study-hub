@@ -22,12 +22,14 @@ Die Datei .github/workflows/ci.yml startet bei jedem Pull Request, Push auf main
 - Schutzkontrolle des öffentlichen Repositories gegen verbotene Dateitypen, typische Key-Signaturen und geheime Laufzeitdateien.
 - Syntaxkontrolle der vorhandenen .ts-Quelldateien.
 - Node-Test-Suite für Credit-Aggregation, Anerkennung ohne Doppelzählung, ungewählte Wahloptionen, Nullpunkt und Obergrenze, Theme-Auswahl und Widget-Registry.
+- Syntax- und Kontrakttests für die statische Dashboard-Vorschau: Navigation, Demo-Daten, Themes, Widget-Sichtbarkeit/Reihenfolge und sichere Layout-Normalisierung.
 
 Die CI hat nur contents: read und benötigt **keine Secrets**. Sie lädt keine persönlichen Studieninformationen hoch.
 
 ## Was diese Pipeline noch NICHT leistet
 
-- Weder Frontend-Build noch React-Komponententests (Frontend noch nicht erstellt).
+- Der statische UX-Prototyp unter `prototypes/dashboard/` hat JS-Syntax- und Kernkontrakttests; **kein React-Frontend, Build oder React-Komponententests** existieren bisher.
+- Manueller Chromium-/Mobildesign-Check ist vor dem Human-Review separat festzuhalten; CI führt aktuell keinen echten Browser-E2E-Test aus.
 - Weder API-/PostgreSQL-Integrationstests noch Docker-Compose-Deploymentchecks (Dienste noch nicht implementiert).
 - Keine vollständige TypeScript-Typprüfung: strip-types prüft ausführbaren Code, ersetzt aber keinen tsc-Lauf.
 - Kein echter Backup/Restore-Test, bevor der Docker-Stack und private Sicherungsziele existieren.

@@ -45,3 +45,6 @@ notion-export*/
 personal/
 private/
 .local/
+
+# Local prototype catalog – personal selections and provided institution details must remain private
+prototypes/dashboard/local-study-data.json

@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; script-src &#39;self&#39;; style-src &#39;self&#39;; img-src &#39;self&#39; data:; connect-src &#39;self&#39;; base-uri &#39;none&#39;; form-action &#39;none&#39;">
+  <meta name="description" content="Study Hub Dashboard – öffentliches, synthetisches UI-Konzept">
+  <title>Study Hub · Dashboard-Vorschau</title>
+  <script src="./theme-bootstrap.js"></script>
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Zum Inhalt springen</a>
+  <div class="app-shell">
+    <button type="button" class="mobile-backdrop" id="sidebar-backdrop" aria-label="Menü schließen" hidden></button>
+    <aside class="sidebar" id="sidebar" aria-label="Hauptnavigation">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">S<span>H</span></div>
+        <div><strong>STUDY HUB</strong><span>YOUR LEARNING SPACE</span></div>
+      </div>
+      <div class="workspace-box">
+        <div class="workspace-icon" aria-hidden="true">◈</div>
+        <div class="workspace-info"><strong>Demo-Workspace</strong><span>Nur Beispieldaten</span></div>
+        <span class="workspace-chevron" aria-hidden="true">⌄</span>
+      </div>
+      <nav class="sidebar-nav" aria-label="Bereiche">
+        <p class="nav-label">ÜBERSICHT</p>
+        <button class="nav-link active" type="button" data-route="dashboard" aria-current="page"><span aria-hidden="true">◫</span> Dashboard</button>
+        <button class="nav-link" type="button" data-route="programs"><span aria-hidden="true">▤</span> Studiengänge</button>
+        <p class="nav-label nav-label-spaced">STUDIUM</p>
+        <button class="nav-link" type="button" data-route="modules"><span aria-hidden="true">▦</span> Module & Credits</button>
+        <button class="nav-link" type="button" data-route="roadmap"><span aria-hidden="true">⌁</span> Roadmap</button>
+        <button class="nav-link" type="button" data-route="tasks"><span aria-hidden="true">☷</span> Lernaufgaben</button>
+        <p class="nav-label nav-label-spaced">LERNEN</p>
+        <button class="nav-link" type="button" data-route="exams"><span aria-hidden="true">▣</span> Prüfungen <small>Später</small></button>
+        <button class="nav-link" type="button" data-route="flashcards"><span aria-hidden="true">▧</span> Lernkarten <small>Später</small></button>
+        <button class="nav-link" type="button" data-route="library"><span aria-hidden="true">▥</span> Bibliothek <small>Später</small></button>
+        <button class="nav-link" type="button" data-route="focus"><span aria-hidden="true">◷</span> Fokusmodus <small>Später</small></button>
+      </nav>
+      <div class="sidebar-bottom">
+        <button class="nav-link" type="button" data-route="settings"><span aria-hidden="true">⚙</span> Einstellungen</button>
+        <div class="sidebar-footer"><span class="live-dot"></span> Lokaler UX-Prototyp <small>v0.1 · Kein Backend</small></div>
+      </div>
+    </aside>
+    <div class="content-shell">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button id="menu-toggle" class="icon-button menu-toggle" aria-label="Navigation öffnen" aria-expanded="false" aria-controls="sidebar" type="button">☰</button>
+          <span class="crumb-root">WORKSPACE</span><span class="crumb-slash">/</span><strong id="breadcrumb">Dashboard</strong>
+        </div>
+        <div class="topbar-right">
+          <label class="theme-control" for="theme-select"><span aria-hidden="true">◐</span><span class="sr-only">Farbschema</span>
+            <select id="theme-select" aria-label="Farbschema wählen">
+              <option value="system">System</option><option value="light">Hell</option><option value="dark">Dunkel</option>
+            </select>
+          </label>
+          <div class="topbar-divider"></div>
+          <span class="avatar" aria-label="Demo-Profil">SH</span>
+        </div>
+      </header>
+      <main id="main-content" tabindex="-1">
+        <div id="dashboard-page">
+          <div class="page-heading">
+            <div>
+              <p class="eyebrow"><span class="eyebrow-dot"></span> DEIN LERNBEREICH <span class="demo-pill">SYNTHETISCHE DEMO</span></p>
+              <h1>Dein Studium. <em>Dein Überblick.</em></h1>
+              <p class="page-subtitle">Ein klarer Blick auf Fortschritt, Module und nächste Schritte – alles an einem Ort.</p>
+            </div>
+            <button id="customize-top" type="button" class="primary-button"><span aria-hidden="true">⊞</span> Dashboard anpassen</button>
+          </div>
+          <div class="overview-strip" aria-label="Demo-Studienstatus">
+            <div class="overview-cell"><span class="overview-symbol">◈</span><div><small>AKTIVES LERNPROGRAMM</small><strong>Beispielstudiengang</strong></div></div>
+            <div class="overview-cell"><span class="overview-symbol accent">↗</span><div><small>DEMO-FORTSCHRITT</small><strong>30 von 120 Credits</strong></div></div>
+            <div class="overview-cell"><span class="overview-symbol violet">☷</span><div><small>ALS NÄCHSTES</small><strong>3 Lernaufgaben</strong></div></div>
+          </div>
+          <div class="section-heading">
+            <div><span class="section-kicker">DEIN COCKPIT</span><h2>Übersicht <span class="section-muted">/ individuell</span></h2></div>
+            <button id="customize-secondary" type="button" class="quiet-button">Kacheln verwalten <span aria-hidden="true">⚙</span></button>
+          </div>
+          <div id="widget-grid" class="widget-grid" aria-live="polite"></div>
+          <div id="empty-widgets" class="empty-widgets" hidden><strong>Deine Startseite ist leer.</strong><p>Aktiviere im Layout-Menü mindestens eine Kachel.</p><button type="button" class="primary-button" id="empty-customize">Kacheln auswählen</button></div>
+          <div class="preview-disclaimer"><span aria-hidden="true">ⓘ</span> Diese Vorschau nutzt ausschließlich frei erfundene Beispieldaten. Keine API, kein Benutzerkonto, keine externen Dienste.</div>
+        </div>
+        <section id="other-page" class="other-page" hidden aria-live="polite">
+          <p class="eyebrow"><span class="eyebrow-dot"></span> STUDY HUB</p>
+          <div class="placeholder-symbol" aria-hidden="true">◇</div>
+          <h1 id="other-heading">Bereich in Vorbereitung</h1>
+          <p id="other-description">Dieser Bereich wird in einem späteren Work Item umgesetzt. Die Navigation ist bereits vorbereitet.</p>
+          <div class="placeholder-detail"><strong>Was folgt?</strong><p id="other-next"></p></div>
+          <button id="back-to-dashboard" type="button" class="primary-button">← Zurück zum Dashboard</button>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <dialog id="customize-dialog" class="customize-dialog" aria-labelledby="customize-heading">
+    <div class="dialog-header">
+      <div><p class="eyebrow">DEIN LAYOUT</p><h2 id="customize-heading">Dashboard anpassen</h2><p>Wähle Kacheln aus und ändere ihre Reihenfolge.</p></div>
+      <button class="icon-button" id="close-customize" type="button" aria-label="Dialog schließen">✕</button>
+    </div>
+    <div id="customize-list" class="customize-list"></div>
+    <p class="customize-note">Diese Einstellungen bleiben nur in diesem Browser gespeichert. Später werden sie pro Nutzerkonto gesichert.</p>
+    <div class="dialog-footer"><button type="button" class="quiet-button" id="reset-customize">Standard wiederherstellen</button><button type="button" class="primary-button" id="done-customize">Fertig</button></div>
+  </dialog>
+
+  <template id="widget-credits">
+    <div class="widget-title"><span class="widget-icon icon-cyan">↗</span><div><span class="widget-eyebrow">STUDIENFORTSCHRITT</span><h3>Leistungspunkte</h3></div><span class="widget-chip">Live-Vorschau</span></div>
+    <div class="credit-numbers"><strong id="credit-primary">30 <span>/ 120</span></strong><span class="credit-unit">CREDITS</span></div>
+    <div class="progress-frame"><div class="progress-segments" id="credit-segments" role="progressbar" aria-label="Erworbene Credits" aria-valuemin="0" aria-valuemax="120" aria-valuenow="30"></div></div>
+    <div class="progress-scale"><span>0 Credits</span><strong id="credit-percent">25 % abgeschlossen</strong><span>120 Credits</span></div>
+    <div class="credit-footer"><div class="credit-note"><span class="small-dot cyan"></span> 30 erworben</div><div class="credit-note"><span class="small-dot slate"></span> 90 offen</div></div>
+  </template>
+  <template id="widget-roadmap">
+    <div class="widget-title"><span class="widget-icon icon-purple">⌁</span><div><span class="widget-eyebrow">DEIN WEG</span><h3>Studien-Roadmap</h3></div></div>
+    <p class="widget-caption">Die nächsten Meilensteine im Überblick</p>
+    <ol class="milestone-list">
+      <li class="milestone done"><span class="milestone-indicator">✓</span><div><strong>Grundlagen abschließen</strong><small>Demo-Meilenstein · Erledigt</small></div></li>
+      <li class="milestone current"><span class="milestone-indicator">2</span><div><strong>Aufbaumodule bearbeiten</strong><small>Demo-Meilenstein · Aktuell</small></div></li>
+      <li class="milestone"><span class="milestone-indicator">3</span><div><strong>Vertiefung auswählen</strong><small>Demo-Meilenstein · Geplant</small></div></li>
+    </ol>
+    <button class="text-link" type="button" data-go="roadmap">Roadmap öffnen <span>↗</span></button>
+  </template>
+  <template id="widget-module-cockpit">
+    <div class="widget-title"><span class="widget-icon icon-blue">▦</span><div><span class="widget-eyebrow">STUDIENVERWALTUNG</span><h3>Meine Module</h3></div><button class="text-link widget-link" type="button" data-go="modules">Alle ansehen ↗</button></div>
+    <div class="tabs" role="group" aria-label="Module filtern">
+      <button type="button" class="tab active" aria-pressed="true" data-tab="all">Alle Module</button>
+      <button type="button" class="tab" aria-pressed="false" data-tab="elective">Wahloptionen</button>
+      <button type="button" class="tab" aria-pressed="false" data-tab="roadmap">Roadmap</button>
+    </div>
+    <div class="module-table-wrap"><table class="module-table"><thead><tr><th>MODUL</th><th>ART</th><th>STATUS</th><th>CREDITS</th></tr></thead><tbody id="module-table-body"></tbody></table></div>
+  </template>
+  <template id="widget-tasks">
+    <div class="widget-title"><span class="widget-icon icon-gold">☷</span><div><span class="widget-eyebrow">DEIN FOKUS</span><h3>Nächste Aufgaben</h3></div><span class="count-pill">03</span></div>
+    <p class="widget-caption">Kleine Schritte, großer Fortschritt.</p>
+    <div id="tasks-list" class="tasks-list"></div>
+    <button class="text-link" type="button" data-go="tasks">Alle Aufgaben öffnen <span>↗</span></button>
+  </template>
+</body>
+</html>
