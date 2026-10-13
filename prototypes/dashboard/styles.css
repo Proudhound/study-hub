@@ -60,10 +60,7 @@ button:focus-visible, select:focus-visible, input:focus-visible, a:focus-visible
   padding:25px 17px 20px; z-index:30; overflow-y:auto;
 }
 .brand { display:flex; align-items:center; gap:11px; padding:1px 10px 28px; }
-.brand-mark { display:grid; place-items:center; width:42px; height:42px; border-radius:12px;
-  background:linear-gradient(125deg,#009fcb,#1973af); color:white; font-size:19px; font-weight:800;
-  box-shadow:0 8px 20px #16bbf232; letter-spacing:-3px; }
-.brand-mark span { color:#a4f7ff; }
+.brand-logo { display:block; width:44px; height:44px; flex:0 0 44px; object-fit:contain; }
 .brand strong { display:block; font-size:14px; letter-spacing:.13em; color:var(--ui-heading); }
 .brand div:last-child>span { display:block; margin-top:2px; font-size:9px; font-weight:700; letter-spacing:.16em; color:var(--ui-subtle); }
 .workspace-box { display:flex; align-items:center; gap:10px; padding:10px; border:1px solid var(--ui-border); border-radius:12px; background:var(--sh-surface); }
