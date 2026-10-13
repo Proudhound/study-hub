@@ -50,3 +50,13 @@ Die JSON-Datei hat `schemaVersion:1`, `program`, `degree`, `totalCredits`, `earn
 **Datenschutz:** Dieser Mechanismus ist eine lokale Designhilfe, **keine produktive Import-/Authentifizierungslösung**. Der eingebaute Python-HTTP-Server liefert alle Dateien unter seinem Root an lokale Browser-Anfragen aus: Server nur an `127.0.0.1` binden, keine Weiterleitung/Internetfreigabe verwenden. Auf einem gemeinsam genutzten Rechner den Browser und die lokale JSON-Datei schützen. Persönliche Unterlagen und Katalog-PDFs gehören niemals in Commits oder GitHub-Issues. Die Eingabedatei wird nicht hochgeladen; `fetch` greift ausschließlich auf die eigene Loopback-Adresse zu. Work Item: [Privater Katalogimport](https://github.com/Proudhound/study-hub/issues/11).
 
 Die Darstellung von ECTS ist im Katalogmodus **keine Anerkennungs- oder Prüfungsfeststellung**. Bei `earnedCredits:null` zeigt das Dashboard bewusst einen unbekannten Leistungsstand statt fiktiver 0 erworbener Credits.
+
+## Study-Hub-Branding
+
+Die drei vom Product Owner bereitgestellten, statischen SVG-Dateien liegen in `prototypes/dashboard/assets/`:
+
+- `studyhub_icon.svg`: Sidebar-Icon und Browser-Favicon (über `<img>` bzw. `<link rel=icon>` geladen, nicht inline)
+- `studyhub_logo_transparent.svg`: vollständige Wort-/Bildmarke mit transparentem Hintergrund für zukünftige Landing-/Login-Seiten
+- `studyhub_logo.svg`: vollständige Wort-/Bildmarke mit hellem Hintergrund
+
+Sidebar und Favicon zeigen das hochgeladene Icon; die Beschriftung `STUDY HUB` bleibt als zugängliche Textalternative vorhanden. Die beiden großen Logo-Varianten sind für künftige Layouts vorbereitet und werden **nicht** verzerrt in die kleine Sidebar gepresst. Alle Assets sind selbst gehostet: keine externen Fonts/Skripte/CDNs. Die Projektmarke unterliegt eigenständigen Marken-/Namensrechten; die MIT-Lizenz des Codes ist keine automatisch gewährte Markenlizenz.
