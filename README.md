@@ -80,6 +80,12 @@ Echte Daten werden nach Fertigstellung der Anwendung ausschließlich in deren pr
 
 **Open Source:** Der Code und die Dokumentation stehen unter der [MIT-Lizenz](LICENSE). Beiträge sind über Issues und Pull Requests willkommen. Keine realen Nutzer- oder Studieninformationen hochladen.
 
+## Issues und Entwicklungsgates
+
+Study Hub verwendet ein strukturiertes, öffentliches GitHub-Issue-System für **Epic, User Story, Technical Task, Bug und Decision (DEC)**. Die ID-/Domain-/Priority-Regeln, Definition of Ready und der Ablauf `Developer → Dev Verification → Independent QA → Independent Reviewer → Human Acceptance → Done` sind unter [Work Items](docs/governance/WORK_ITEMS.md) und [Development Process](docs/governance/DEVELOPMENT_PROCESS.md) dokumentiert. **Human Acceptance ist ein Hard Stop**; grüne CI-Jobs dürfen kein automatisches Merge auslösen. Agentenhinweise: [AGENTS.md](AGENTS.md).
+
+Das Repository verwendet **eine eigene, generische Prozessbeschreibung**. Es benötigt keinen Zugriff auf andere private Projekte oder deren Agentenruntimes.
+
 ## Tests bereits verfügbar
 
 Mit Node.js 22.16+ und Git:

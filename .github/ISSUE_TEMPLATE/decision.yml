@@ -1,0 +1,59 @@
+name: "⚖️ Decision (DEC)"
+description: "Wesentliche Produkt- oder Architekturentscheidung vor der Umsetzung"
+title: "[DEC-NNN] "
+labels: []
+body:
+  - type: markdown
+    attributes:
+      value: "Öffentliches Repository: ausschließlich synthetische Beispiele. Keine persönlichen Studiendaten, Hochschulunterlagen, privaten Hosts, Keys oder Screenshots mit vertraulichen Inhalten. Issues sind zunächst Backlog/Discovery; der DoR-Check ist eine spätere Freigabe, keine Pflichtbestätigung beim Einreichen. DEC ist eine offene PO-Entscheidung. Bei dauerhaft relevanten Architekturentscheidungen dokumentiert ein separates ADR den beschlossenen Zustand. Keine Implementierung ohne Beschluss."
+  - type: dropdown
+    id: domain
+    attributes:
+      label: "Primäre Domain"
+      options: ["AUTH","STUDY","MOD","ECTS","ELEC","ROAD","DASH","LEARN","EXAM","LIB","UI","AI","API","DB","SEC","OPS","CI","DOC","CROSS"]
+    validations:
+      required: true
+  - type: textarea
+    id: decision
+    attributes:
+      label: "Zu entscheidender Sachverhalt"
+    validations:
+      required: true
+  - type: textarea
+    id: options
+    attributes:
+      label: "Alternativen mit Vor- und Nachteilen"
+    validations:
+      required: true
+  - type: textarea
+    id: criteria
+    attributes:
+      label: "Entscheidungskriterien und Risiken"
+    validations:
+      required: true
+  - type: textarea
+    id: references
+    attributes:
+      label: "Referenzdateien, Dokumentation und Quellen"
+    validations:
+      required: true
+  - type: textarea
+    id: recommendation
+    attributes:
+      label: "Begründete Empfehlung (unverbindlich)"
+    validations:
+      required: false
+  - type: textarea
+    id: po_decision
+    attributes:
+      label: "PO-Beschluss"
+      description: "Bis zur ausdrücklichen Freigabe als OFFEN dokumentieren; kein bloßes Formularfeld gilt als Approval."
+      value: "OFFEN – Entscheidung durch autorisierten Maintainer / Product Owner ausstehend."
+    validations:
+      required: false
+  - type: textarea
+    id: followup
+    attributes:
+      label: "Erforderliche ADR / Folge-Issues / Review-Termin"
+    validations:
+      required: false
