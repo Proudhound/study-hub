@@ -1,95 +1,45 @@
-# Learning Stack – Kandidaten
+# Optionale Lern- und KI-Integrationen
 
-Status: **Vormerkung / Diskussion, noch keine feste Architektur**
+Status: **Kandidatenliste für spätere Produktentwicklung**; kein Bestandteil des MVP und keine aktive Integration.
 
-## Zielbild
+Der Kern von Study Hub funktioniert ohne KI, ohne Hochschul-API und ohne externe Cloud. Zusätzliche Lerntechnologien sollen hinter einer austauschbaren Integrationsschnittstelle angebunden werden, nicht als Zwang zur Nutzung bestimmter Anbieter.
 
-Jedes Fach bzw. Modul soll später als eigener Lernkontext funktionieren. Ausgangsmaterialien können dort gesammelt und anschließend mit KI-Werkzeugen in aktive Lernformen überführt werden.
+## Bewertungskriterien für jeden Kandidaten
 
-Beispiel:
-
-`Modulmaterial -> strukturierte Themen -> Erklärungen -> Diskussion / Fragen -> Quiz / Active Recall -> Wiederholung -> Prüfungsvorbereitung`
+- Unterstützte Funktionen (Erklärungen, Quiz, Active Recall, Kursaufbereitung)
+- Technische Integrationsform (API, SDK, MCP, eingebetteter Dienst)
+- Betrieb lokal oder extern, Datenfluss und Nutzerzustimmung
+- Hardwarebedarf und laufende Kosten
+- Lizenz, Weiterverwendung und Sicherheit
+- Wartungszustand, Versionskompatibilität und Update-Aufwand
+- Tests mit **synthetischen** Daten; keine echten Lernunterlagen in öffentlichen Testfällen
 
 ## 1. OpenMAIC
 
-Vorgemerkt als besonders interessanter Kandidat für modulbezogene Lernumgebungen.
-
-Potenzielle Nutzung:
-
-- PDFs / Skripte / Folien als Ausgangsmaterial
-- Thema oder Modul in einen strukturierten Kurs überführen
-- KI-Dozent / Whiteboard
-- Quiz und Übungen
-- Diskussion mit mehreren Lernagenten
-- länger laufende Lern-Sessions
-
-Noch zu klären:
-
-- sinnvoller Betriebsmodus
-- benötigte Modelle / Kosten
-- lokaler vs. Cloud-Betrieb
-- Umgang mit Copyright-/Hochschulunterlagen
-- wie eng es an einzelne Modulordner gekoppelt werden soll
+Als zu evaluierender Ansatz für modulbezogene interaktive Erklärungen, Whiteboards und Quiz. **Keine zugesagte API-Kompatibilität oder Self-Hosting-Eignung** ohne technischen Proof of Concept. Zu prüfen: Abhängigkeiten, Lizenzen, Infrastrukturbedarf, Datenschutz und Nutzererlebnis.
 
 ## 2. AI Teaching Agent Team
 
-Aus `Shubhamsaboo/awesome-llm-apps` als zweiter Kandidat vormerken.
+Konzeptioneller Kandidat für adaptive Lernfragen und mehrere Erklärperspektiven; Inspirationsquelle: `Shubhamsaboo/awesome-llm-apps`. Vor einem Einsatz müssen Implementierung, Lizenz, Wartung und sichere Datengrenzen konkret verifiziert werden.
 
-Mögliche Rolle:
+## 3. Kuratierte Discovery-Quellen
 
-- individuelle Lernpfade
-- mehrere fachliche Perspektiven
-- Fragen und Verständnischecks
-- Aufbereitung eines Moduls nach Lernzielen
+Listen wie `sindresorhus/awesome` oder fachbezogene Awesome-Listen können bei einer Recherche helfen. Sie sind keine produktive Komponente und werden nicht automatisiert in die App eingebunden.
 
-Vor Integration mit OpenMAIC vergleichen. Ziel ist **kein doppelter Lern-Stack**, sondern ein möglichst schlanker Aufbau.
+## 4. Open Design / Visualisierung
 
-## 3. Awesome-Repositories als Discovery-Quellen
+Tools wie `nexu-io/open-design` sind höchstens Inspirations- oder Evaluierungskandidaten für visuelle Lernartefakte. Kein Kernbestandteil und keine zugesagte Integration.
 
-Für neue Lernthemen können kuratierte Listen gezielt durchsucht werden, insbesondere:
+## Architekturprinzip
 
-- `sindresorhus/awesome`
-- fachbezogene Awesome-Listen
-- `Shubhamsaboo/awesome-llm-apps`
+```text
+Study-Hub-Domäne
+  └─ Optionales AI/Learning-Plugin-Interface
+       ├─ lokaler Provider (optional)
+       ├─ externer Provider (nur nach Freigabe)
+       └─ keine KI (vollständig funktionsfähiger Standard)
+```
 
-Nicht als Dauerprozess, sondern dann, wenn für ein neues Fach oder Thema geeignete Ressourcen / Tools gesucht werden.
+Die privaten Daten verbleiben in der Nutzerinstanz. Für die Verarbeitung durch externe Anbieter ist eine getrennte, verständliche Einwilligung bzw. Freigabe je Datenfluss erforderlich. Jeder KI-Ausgabeweg muss nachvollziehbar sein.
 
-## 4. Open Design
-
-`nexu-io/open-design` vormerken für spätere Lern- und Studienartefakte:
-
-- Diagramme und visuelle Erklärungen
-- Präsentationen
-- UI-/UX-Übungen
-- ggf. Projekt-/Pitch-Unterlagen im Studium
-
-Kein Kernbestandteil des Lernsystems.
-
-## 5. Modul-Autonomie als Leitprinzip
-
-Später prüfen, ob jeder Modulordner mindestens enthalten soll:
-
-- Lernziele
-- Quellen / Originalmaterial
-- eigene Notizen
-- Fragen / offene Punkte
-- generierte Zusammenfassungen
-- Quiz / Active Recall
-- Wiederholungsplan
-- Prüfungsvorbereitung
-- ggf. modulbezogene KI-Konfiguration
-
-Diese Struktur ist **noch nicht beschlossen** und wird vor der breiten Anlage von Modulordnern gemeinsam festgelegt.
-
-## Offene Entscheidungen
-
-1. Top-Level-Struktur des Repositories
-2. Standard für Modulordner
-3. Dateinamen und Metadaten
-4. Umgang mit großen Dateien / PDFs
-5. OpenMAIC vs. AI Teaching Agent vs. Kombination
-6. Lernkarten / Spaced Repetition
-7. Web-App für Prüfungsvorbereitung
-8. Trennung zwischen offiziellen Studienmodulen und freien Lernthemen
-9. Grundstudium / Weiterbildung / Master als Kategorien oder Metadaten
-10. Wiederverwendbare Prompts / Skills für Lernen und Prüfungsvorbereitung
+**Bewusste Abgrenzung:** Keine persönlichen Modulordner, Skripte, Prüfungsdaten, API-Tokens oder automatischen Dokumenten-Uploads in diesem öffentlichen Repository.

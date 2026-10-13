@@ -1,0 +1,47 @@
+# Secret files (only safe placeholder examples may be committed)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa*
+id_ed25519*
+
+# Dependencies, build output and tooling
+node_modules/
+dist/
+build/
+coverage/
+.playwright/
+test-results/
+*.log
+.cache/
+.vite/
+
+# Runtime state and local databases
+data/
+storage/
+uploads/
+backups/
+dumps/
+*.sqlite
+*.sqlite3
+*.db
+*.db-journal
+*.sql.gz
+*.dump
+
+# Personal documents and exports – only deliberately reviewed fixtures in a future tests/fixtures directory
+*.pdf
+*.doc
+*.docx
+*.epub
+*.csv
+*.xlsx
+*.zip
+notion-export*/
+personal/
+private/
+.local/
