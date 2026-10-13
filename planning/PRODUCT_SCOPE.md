@@ -26,6 +26,8 @@ Studienfortschritt, Module, Prüfungstermine und Lernaktivitäten sind häufig �
 | Wahlbereiche | Gruppen von Wahloptionen, Auswahlgrenzen | Nicht gewählte Alternativen erhöhen Fortschritt nicht |
 | Roadmap | Fachliche und formale Vorbedingungen abbilden | Grafische/Listenansicht zeigt Ursachen offener Voraussetzungen |
 | Dashboard | Erreichte und offene Credits, Prozent und segmentierter Balken | Skala startet sichtbar bei 0 und endet am konfigurierten Sollwert |
+| Dashboard-Module | Ein-/Ausblenden und Sortieren von Widgets | Nutzer kann sichtbare Kernmodule und Reihenfolge konfigurieren |
+| Design | Hell/Dunkel/System-Wechsel | Modus ist auswählbar, bleibt gespeichert und folgt optional Systempräferenz |
 | Lernaufgaben | Aufgaben einem Modul zuordnen, Status und Aufwand | Liste nach Priorität/Status filterbar |
 | Datenausgabe | Vollständiger nutzerinitiierter Export in dokumentiertem Format | Daten können ohne proprietäre Cloud-Verbindung gesichert werden |
 | Betrieb | Docker-basierte Installation und Healthcheck | Dokumentierter Start, Sicherung und Restore-Test |
@@ -53,6 +55,8 @@ Studienfortschritt, Module, Prüfungstermine und Lernaktivitäten sind häufig �
 ## UX-Leitbild
 
 Startseite mit klarer Hierarchie: Credits **erreicht / gesamt** als Primärmetrik, Prozent sekundär; hochwertige segmentierte Fortschrittsanzeige mit Nullpunkt, Modul-Cockpit mit Tabs für *alle Module / Wahloptionen / Roadmap*, daneben nächste Lernaufgaben und Prüfungen. Die konkrete Oberfläche wird als eigenständiges Designsystem umgesetzt.
+
+Die ursprünglich getrennt betrachteten Studienfunktionen werden in einem [gemeinsamen Funktionskatalog](FEATURE_PARITY.md) erfasst. Das Dashboard wird in [modularen Widgets](DASHBOARD_MODULES.md) aufgebaut. Für den Betriebsmodus gilt das [Backup-Konzept](BACKUP_AND_RESTORE.md).
 
 ## Definition of Done für einzelne Features
 

@@ -23,7 +23,7 @@
 ## Sichere Entwicklung
 
 1. Vor einem Commit `git status` und `git diff --staged` prüfen.
-2. Secret-Scanning und Abhängigkeitsprüfung als CI-Gate vorsehen.
+2. Der bereits integrierte Public-Repo-Guard prüft typische Secret-Signaturen und verbotene Dateien. Zusätzlich echtes Secret-Scanning, Dependency-Audit und Codeanalyse vor produktiven Releases integrieren.
 3. Fixtures als `synthetic` kennzeichnen; keine realen Daten anonymisieren und dann als Testdaten verwenden.
 4. Sensible Daten in privaten Runtime-Volumes außerhalb des Repositories speichern.
 5. `.env.example` nur mit neutralen Platzhaltern; niemals echte Werte als Default setzen.
@@ -40,7 +40,7 @@
 
 ## Repository-Lizenz
 
-Ein öffentliches Repository ist nicht automatisch Open Source. Vor der ersten öffentlichen Software-Veröffentlichung ist eine passende Lizenz zu beschließen und als `LICENSE` bereitzustellen. Fremde Komponenten/Assets müssen lizenzrechtlich geprüft werden.
+Der Code und die Dokumentation dieses Repositories stehen unter **MIT** (`LICENSE`). Fremde Komponenten/Assets müssen weiterhin lizenzrechtlich geprüft werden. Die Mitarbeit ist in `CONTRIBUTING.md` geregelt.
 
 ## Umgang mit späteren Importern
 

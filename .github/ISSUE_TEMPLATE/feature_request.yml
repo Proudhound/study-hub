@@ -1,0 +1,20 @@
+name: Feature request
+description: Suggest a generic capability of Study Hub
+title: "[Feature] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: "Propose features without including real study data or private infrastructure details."
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem and users affected
+    validations:
+      required: true
+  - type: textarea
+    id: proposed
+    attributes:
+      label: Proposed behavior and acceptance criteria
+    validations:
+      required: true

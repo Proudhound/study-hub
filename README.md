@@ -2,17 +2,18 @@
 
 **Eine selbst hostbare Web-App für Studienorganisation und aktives Lernen.**
 
-> **Projektstatus: Planung / Architektur.** Dieses Repository enthält derzeit die Konzeption; es gibt noch keine lauffähige Anwendung, produktive API oder getestete Installationsanleitung.
+> **Projektstatus: Architektur und erste testbare Kernbausteine.** Eine lauffähige React-Web-App, API, PostgreSQL-Installation und ein Backup-Job existieren noch nicht. Die GitHub-Actions-Testpipeline prüft bereits generische TypeScript-Referenzlogik.
 
 Study Hub soll Studiengänge, Module, Leistungspunkte, Wahlbereiche, Lernaufgaben, Prüfungen und Lernfortschritt in einer eigenen Weboberfläche zusammenführen. Die Anwendung ist unabhängig von bestimmten Hochschulen, Studiengängen, Cloud-Anbietern und persönlichen Daten.
 
 ## Zielbild
 
-- **Studien-Dashboard:** Fortschritt als erreichte / erforderliche Leistungspunkte, Prozentwerte und frei gestaltbare Visualisierungen.
+- **Modulares Studien-Dashboard:** Ein-/ausblendbare Widgets mit frei wählbarer Reihenfolge; Fortschritt als erreichte / erforderliche Credits, Prozentwerte und 0-basiertem Balken.
+- **Light/Dark/System:** Helle, dunkle und automatische Darstellung, mit gespeicherter Nutzerpräferenz.
 - **Studienstruktur:** Studiengänge, Module, Wahlpflichtgruppen und fachliche bzw. verbindliche Voraussetzungen.
 - **Studien-Roadmap:** Abhängigkeiten, geplante Reihenfolge, noch offene oder abgeschlossene Module.
 - **Aktives Lernen:** Lernaufgaben und Sitzungen; Lernkarten, Wiederholungsintervalle und Quiz in späteren Ausbaustufen.
-- **Self-Hosting:** lokaler Betrieb mit Docker Compose, eigener Datenbank, Backup- und Wiederherstellungsprozess.
+- **Self-Hosting:** Betrieb auf eigener Hardware oder einem geeigneten VPS; geplante verschlüsselte Backups an **zwei getrennte Sicherungsziele**.
 - **Privatsphäre:** Personalisierte Studieninformationen ausschließlich in der privaten Installation, **nicht im öffentlichen Git-Repository**.
 
 Die Zielgruppe ist nicht auf eine bestimmte Hochschule oder einen konkreten Studiengang beschränkt. Leistungspunkte, Abschlüsse, Prüfungsformen und Regeln werden konfigurierbar modelliert.
@@ -32,7 +33,7 @@ Die Zielgruppe ist nicht auf eine bestimmte Hochschule oder einen konkreten Stud
 
 ## Geplante Repository-Struktur
 
-Die folgende Struktur ist ein **Zielentwurf**, kein Verzeichnislisting des derzeitigen Repositories:
+Die folgende Struktur ist ein **Zielentwurf**, kein Verzeichnislisting des derzeitigen Repositories. Kleine testbare Bausteine in `packages/` und die CI-Konfiguration existieren bereits:
 
 ```text
 study-hub/
@@ -65,6 +66,11 @@ Persönliche Daten, Uploads, Datenbankdateien, Backups und echte Konfigurationsw
 - [Entwicklungs-Roadmap](planning/ROADMAP.md)
 - [Optionale KI-/Lernkomponenten](planning/LEARNING_STACK_CANDIDATES.md)
 - [Sicherheits- und Veröffentlichungsregeln](planning/SECURITY.md)
+- [Backup- und Restore-Konzept (lokal + extern)](planning/BACKUP_AND_RESTORE.md)
+- [Modularer Dashboard-Aufbau und Themes](planning/DASHBOARD_MODULES.md)
+- [Funktionskatalog für die Studien-Web-App](planning/FEATURE_PARITY.md)
+- [Tests und GitHub Actions](docs/TESTING.md)
+- [Mitmachen](CONTRIBUTING.md) · [Verhaltensregeln](CODE_OF_CONDUCT.md) · [Lizenz (MIT)](LICENSE)
 
 ## Datenschutz und öffentliche Entwicklung
 
@@ -72,7 +78,18 @@ Dieses Repository ist **öffentlich**. Es darf ausschließlich generische Produk
 
 Echte Daten werden nach Fertigstellung der Anwendung ausschließlich in deren privater Installation erfasst bzw. über einen nutzerinitiierten Import verarbeitet. Eine externe KI-Anbindung ist optional und standardmäßig deaktiviert.
 
-Eine Open-Source-Lizenz ist noch festzulegen; **öffentlich lesbar bedeutet nicht automatisch frei lizenziert**.
+**Open Source:** Der Code und die Dokumentation stehen unter der [MIT-Lizenz](LICENSE). Beiträge sind über Issues und Pull Requests willkommen. Keine realen Nutzer- oder Studieninformationen hochladen.
+
+## Tests bereits verfügbar
+
+Mit Node.js 22.16+ und Git:
+
+```bash
+npm ci
+npm run check
+```
+
+Das führt Syntax- und Sicherheitshinweisprüfungen sowie automatisierte Tests der Credit-Berechnung, Theme-Auswahl und Dashboard-Modulkonfiguration aus. **Es startet noch keine Web-App.** Einzelheiten unter [Tests](docs/TESTING.md).
 
 ## Aktueller nächster Schritt
 

@@ -5,10 +5,11 @@ Status: **Entwurf**. Die Phasen sind nach Abhängigkeiten geordnet; keine künst
 ## Phase 0 — Architektur und Repository-Hygiene
 
 - [x] Öffentliche, generische Produktbeschreibung und technische Leitplanken dokumentieren
-- [ ] Lizenzentscheidung treffen und Lizenzdatei ergänzen
+- [x] MIT-Lizenz festlegen und Lizenzdatei ergänzen
 - [ ] ADR für Tech-Stack, Authentifizierung und Installationsmodus erstellen
-- [ ] Repository-Konventionen, PR-Vorlage, CI-Baseline und CONTRIBUTING definieren
-- [ ] Synthetische Demo-Szenarien und Testregeln festlegen
+- [x] Repository-Konventionen, PR-Vorlage, CI-Baseline und CONTRIBUTING definieren
+- [x] Erste synthetische Domain-/Theme-/Widget-Testfälle implementieren
+- [ ] Vollständige synthetische Demo-Datensätze und API-Testdaten definieren
 
 **Gate:** Keine realen Daten im Repository; Team kann das geplante System unabhängig von privaten Umgebungen verstehen.
 
@@ -18,8 +19,10 @@ Status: **Entwurf**. Die Phasen sind nach Abhängigkeiten geordnet; keine künst
 - [ ] Lokale Docker-Compose-Entwicklung mit PostgreSQL und Healthchecks
 - [ ] Authentifizierung, Sitzungen, Autorisierung und Datenisolation
 - [ ] API-Grundgerüst, strukturiertes Fehlerhandling, Zod-Schemas
-- [ ] Unit-/Integrations-/E2E-Testpipeline und synthetische Testdaten
-- [ ] Backup- und Restore-Test
+- [x] GitHub-Actions-CI mit ersten Unit-/Domänen- und Repository-Tests einrichten
+- [ ] Typecheck/Lint/Build und API-/PostgreSQL-Integrations- sowie Browser-E2E-Tests ergänzen
+- [x] Backup-Konzept für zwei getrennte verschlüsselte Ziele definieren
+- [ ] Automatischen lokalen + Offsite-Backup-Job und Restore-Test implementieren
 
 **Gate:** Leere, privat installierte Instanz läuft; kein unautorisierter Zugriff auf Daten.
 
@@ -31,6 +34,8 @@ Status: **Entwurf**. Die Phasen sind nach Abhängigkeiten geordnet; keine künst
 - [ ] Abhängigkeiten und formale Zulassungsregeln erfassen
 - [ ] Dashboard: `erreicht / Soll`, Prozent, 0-basierte segmentierte Anzeige
 - [ ] Ein Modul-Cockpit mit Ansichten: **Alle Module / Vertiefungen / Roadmap**
+- [ ] Modulare Startseite: Widgets ein-/ausblenden und sortieren (Layout persistent)
+- [ ] Light/Dark/System-Wechsel mit gespeicherter Präferenz und Accessibility-Test
 - [ ] Lernaufgaben, Sortierung, Filter und einfacher Export
 
 **Gate:** Die Credit-Aggregation ist bei Anerkennungen, Alternativen und Regeländerungen korrekt; automatisierte Tests decken Doppelzählung ab.
@@ -51,6 +56,13 @@ Status: **Entwurf**. Die Phasen sind nach Abhängigkeiten geordnet; keine künst
 - [ ] Lokale Modell-Integration evaluieren
 - [ ] PWA-/Offline-Funktionen und Multi-User nach Bedarf
 - [ ] Öffentliche Release-Dokumentation, Upgrade-Guides, Sicherheitsprüfung
+
+## Referenzen
+
+- [Backup/Restore](BACKUP_AND_RESTORE.md)
+- [Dashboard-Module und Themes](DASHBOARD_MODULES.md)
+- [Funktionskatalog](FEATURE_PARITY.md)
+- [Testpipeline](../docs/TESTING.md)
 
 ## Priorisierte technische Risiken
 
