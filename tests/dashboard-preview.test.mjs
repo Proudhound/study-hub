@@ -95,3 +95,15 @@ test("local data path is gitignored and requires explicit local URL opt-in", () 
   assert.match(script,/credentials:"omit"/);
   assert.match(html,/connect-src &#39;self&#39;/);
 });
+
+test("dashboard mobile menu and widget customizer preserve keyboard access", () => {
+  const source = readFileSync(new URL("../prototypes/dashboard/app.js", import.meta.url), "utf8");
+  assert.match(source, /sidebar\.inert = hidden/);
+  assert.match(source, /sidebar\.setAttribute\("aria-hidden", "true"\)/);
+  assert.match(source, /mobileLayout\.addEventListener\("change", closeSidebar\)/);
+  assert.match(source, /menuButton\.focus\(\)/);
+  assert.match(source, /focusTarget && dialog\.open/);
+  assert.match(source, /row\.dataset\.module = entry\.id/);
+  assert.match(source, /preferred\.focus\(\)/);
+  assert.match(source, /fallback\?\.focus\(\)/);
+});

@@ -51,18 +51,39 @@ $("#theme-select").addEventListener("change", event => {
 media.addEventListener("change", () => { if (theme === "system") applyTheme(); });
 applyTheme();
 
+const mobileLayout = window.matchMedia("(max-width: 700px)");
+function syncSidebarA11y() {
+  const hidden = mobileLayout.matches && !sidebar.classList.contains("sidebar-open");
+  sidebar.inert = hidden;
+  if (hidden) sidebar.setAttribute("aria-hidden", "true");
+  else sidebar.removeAttribute("aria-hidden");
+}
 function closeSidebar() {
+  const restoreFocus = mobileLayout.matches && (sidebar.contains(document.activeElement) || document.activeElement === backdrop);
+  if (restoreFocus) menuButton.focus();
   sidebar.classList.remove("sidebar-open");
   backdrop.hidden = true;
   menuButton.setAttribute("aria-expanded", "false");
+  syncSidebarA11y();
+}
+function openSidebar() {
+  sidebar.inert = false;
+  sidebar.removeAttribute("aria-hidden");
+  sidebar.classList.add("sidebar-open");
+  backdrop.hidden = false;
+  menuButton.setAttribute("aria-expanded", "true");
+  (sidebar.querySelector('[aria-current="page"]') || sidebar.querySelector("[data-route]"))?.focus();
 }
 menuButton.addEventListener("click", () => {
-  const opened = sidebar.classList.toggle("sidebar-open");
-  backdrop.hidden = !opened;
-  menuButton.setAttribute("aria-expanded", String(opened));
+  if (sidebar.classList.contains("sidebar-open")) closeSidebar();
+  else openSidebar();
 });
 backdrop.addEventListener("click", closeSidebar);
-window.addEventListener("keydown", event => { if (event.key === "Escape") closeSidebar(); });
+window.addEventListener("keydown", event => {
+  if (event.key === "Escape" && sidebar.classList.contains("sidebar-open")) closeSidebar();
+});
+mobileLayout.addEventListener("change", closeSidebar);
+syncSidebarA11y();
 
 function navigate(route) {
   if (!Object.hasOwn(view, route)) return;
@@ -254,11 +275,22 @@ function renderWidgets() {
   }
   $("#empty-widgets").hidden = visible > 0;
 }
-function changeLayout(mutator) {
+function changeLayout(mutator, focusTarget = null) {
   layout = mutator(layout);
   write(LAYOUT_STORAGE_KEY, JSON.stringify(layout));
   renderWidgets();
   renderCustomizer();
+  if (focusTarget && dialog.open) {
+    const row = [...$("#customize-list").children].find(element => element.dataset.module === focusTarget.id);
+    if (row) {
+      const preferred = focusTarget.action === "toggle"
+        ? row.querySelector('input[type="checkbox"]')
+        : [...row.querySelectorAll(".reorder-controls button")].find(button => button.dataset.direction === String(focusTarget.action));
+      const fallback = row.querySelector('input[type="checkbox"]');
+      if (preferred && !preferred.disabled) preferred.focus();
+      else fallback?.focus();
+    }
+  }
 }
 function renderCustomizer() {
   const list = $("#customize-list");
@@ -271,12 +303,13 @@ function renderCustomizer() {
   entries.forEach((entry, index) => {
     const row = document.createElement("div");
     row.className = "customize-row" + (entry.available ? "" : " future-row");
+    row.dataset.module = entry.id;
     const label = document.createElement("label");
     const input = document.createElement("input");
     input.type = "checkbox";
     input.checked = entry.available && !layout.hidden.includes(entry.id);
     input.disabled = !entry.available;
-    input.addEventListener("change", () => changeLayout(old => setModuleVisible(old, entry.id, input.checked)));
+    input.addEventListener("change", () => changeLayout(old => setModuleVisible(old, entry.id, input.checked), {id:entry.id,action:"toggle"}));
     const text = document.createElement("span");
     text.textContent = entry.label;
     label.append(input, text);
@@ -291,7 +324,8 @@ function renderCustomizer() {
         button.textContent = glyph;
         button.disabled = index + direction < 0 || index + direction >= layout.order.length;
         button.setAttribute("aria-label", entry.label + " " + desc);
-        button.addEventListener("click", () => changeLayout(old => moveModule(old, entry.id, direction)));
+        button.dataset.direction = String(direction);
+        button.addEventListener("click", () => changeLayout(old => moveModule(old, entry.id, direction), {id:entry.id,action:direction}));
         controls.append(button);
       }
       row.append(controls);
